@@ -59,9 +59,17 @@ Mỗi người sửa file của mình; PR vào main; không commit `data/` (ch�
 
 ## 10. Chạy
 ```
-python src/simulate.py --users 300 --seed 42 --out data/daily.csv              # dữ liệu đầy đủ
-python src/simulate.py --users 20  --seed 42 --out data/sample_v0.csv          # bản v0 nhỏ
-python src/simulate.py --users 300 --seed 42 --check --fig results/sanity_v0.png  # thống kê + hình kiểm tra
-python src/test_pipeline.py                  # kiểm tra nhãn, oracle, rò rỉ tương lai, chỉ số
-python src/run_baselines.py --seed 1         # B1/B2: tune m trên val, đánh giá trên test
+# Bước 2: Sinh dữ liệu (bản v0 nhỏ, bản dev 42, và 3 seed chạy cuối 1, 2, 3)
+python src/simulate.py --users 20  --seed 42 --out data/sample_v0.csv          # bản v0 nhỏ (20 người)
+python src/simulate.py --users 300 --seed 42 --out data/daily.csv              # dữ liệu đầy đủ (dev seed 42)
+python src/simulate.py --users 300 --seed 1  --out data/daily_seed1.csv        # dữ liệu đầy đủ seed 1
+python src/simulate.py --users 300 --seed 2  --out data/daily_seed2.csv        # dữ liệu đầy đủ seed 2
+python src/simulate.py --users 300 --seed 3  --out data/daily_seed3.csv        # dữ liệu đầy đủ seed 3
+
+# Bước 3: Chạy Baseline B1, B2 (tune m trên val, đánh giá trên test, xuất CSV kết quả)
+python src/run_baselines.py --seed 1                                           # chạy riêng seed 1 -> results/baselines_seed1.csv
+python src/run_baselines.py --seed 2                                           # chạy riêng seed 2 -> results/baselines_seed2.csv
+python src/run_baselines.py --seed 3                                           # chạy riêng seed 3 -> results/baselines_seed3.csv
+python src/run_baselines.py --all-seeds                                        # chạy cả 3 seed + xuất results/baselines_mean_seeds123.csv
+python src/run_baselines.py --data data/sample_v0.csv --mode xgb               # chạy trên sample_v0.csv khớp mốc thời gian với model_XGBoost.py
 ```
