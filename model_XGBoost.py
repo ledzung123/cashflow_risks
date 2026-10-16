@@ -17,18 +17,14 @@ df["cycle_id"] = new_cycle_mask.astype(int).groupby(df["user_id"]).cumsum()
 df["D"] = df["day_in_cycle"] + df["days_to_next_income"] - 1
 df = df.sort_values(["user_id", "cycle_id", "day_in_cycle"]).reset_index(drop=True)
 
-# ============================================================
 # Bước 3 (một phần, tính nội bộ — KHÔNG lưu trong daily.csv gốc):
 # theta_t = trung bình chi tiêu 14 ngày gần nhất tại ngày t, chỉ dùng
 # dữ liệu <= ngày t-1 (shift(1) trước khi rolling, tránh leak chính ngày t)
-# ============================================================
 g_user = df.sort_values(["user_id", "date"]).groupby("user_id")["spend"]
 df = df.sort_values(["user_id", "date"]).reset_index(drop=True)
 df["theta_t"] = g_user.transform(lambda s: s.shift(1).rolling(14, min_periods=5).mean())
 
-# ============================================================
 # Đặc trưng "backward-looking" — chỉ dùng spend đến trước ngày t
-# ============================================================
 g = df.groupby("user_id")["spend"]
 df["avg7"]  = g.transform(lambda s: s.shift(1).rolling(7,  min_periods=3).mean())
 df["avg14"] = g.transform(lambda s: s.shift(1).rolling(14, min_periods=5).mean())
@@ -37,23 +33,26 @@ df["std14"] = g.transform(lambda s: s.shift(1).rolling(14, min_periods=5).std())
 df["sum7"]  = g.transform(lambda s: s.shift(1).rolling(7,  min_periods=3).sum())
 df["balance_over_theta"] = df["balance"] / df["theta_t"].replace(0, np.nan)
 
-BACKWARD_FEATS = ["avg7", "avg14", "avg28", "std14", "sum7", "balance_over_theta"]
+# NEW: Chuẩn hóa theo từng người: chia các đặc trưng tuyệt đối cho theta_t (baseline
+# chi tiêu riêng của chính user đó) để một model chung không bị lệch bởi scale
+# thu nhập/chi tiêu khác nhau tới ~4 lần giữa các user.
+for _col in ["avg7", "avg14", "avg28", "std14", "sum7"]:
+    df[f"{_col}_rel"] = df[_col] / df["theta_t"].replace(0, np.nan)
 
-# ============================================================
+
+BACKWARD_FEATS = ["avg7_rel", "avg14_rel", "avg28_rel", "std14_rel", "sum7_rel", "balance_over_theta",
+                   "theta_t"]
+
 # Số ngày còn lại trong chu kỳ hiện tại (tính cả hôm nay) -> quyết định
 # có tạo sample tại dòng này hay không, và horizon tối đa cho phép
-# ============================================================
 df["remaining_days"] = df["D"] - df["day_in_cycle"]
 decision_rows = df[df["remaining_days"] >= MIN_REMAINING_DAYS].copy()
 print(f"Số điểm quyết định (remaining_days >= {MIN_REMAINING_DAYS}): "
       f"{len(decision_rows):,} / {len(df):,} dòng gốc")
 
-# ============================================================
 # Sinh mẫu "direct multi-horizon": với mỗi h, lấy target bằng cách
 # shift(-h) TRONG CÙNG (user_id, cycle_id) -> nếu h vượt quá chu kỳ,
-# pandas tự trả NaN (không bị lẫn sang chu kỳ kế tiếp) -> dropna sau đó
-# sẽ tự loại các h không hợp lệ, không cần tính max_h thủ công.
-# ============================================================
+# pandas tự trả NaN (không bị lẫn sang chu kỳ kế tiếp) -> sẽ tự loại các h không hợp lệ, không cần tính max_h thủ công.
 cycle_sorted = df.sort_values(["user_id", "cycle_id", "day_in_cycle"])
 cycle_group = cycle_sorted.groupby(["user_id", "cycle_id"])["spend"]
 
@@ -81,9 +80,7 @@ samples = samples.dropna(
     subset=["target_spend"] + BACKWARD_FEATS + ["target_weekday", "target_is_weekend"]
 ).reset_index(drop=True)
 
-# ============================================================
-# Đặc trưng dùng cho mô hình — TUYỆT ĐỐI KHÔNG CÓ "pattern"
-# ============================================================
+# Đặc trưng dùng cho mô hình
 FEATURE_COLS = (
     ["h", "target_weekday", "target_is_weekend", "target_day_in_cycle",
      "day_in_cycle", "remaining_days"]
@@ -92,21 +89,27 @@ FEATURE_COLS = (
 assert "pattern" not in FEATURE_COLS, "LỖI: pattern là nhãn thật, không được dùng làm đặc trưng!"
 assert "pattern" not in samples[FEATURE_COLS].columns
 
-# ============================================================
-# Chia tập theo thời gian (walk-forward), xấp xỉ tỉ lệ 12/3/3 (rút gọn)
-# ============================================================
+# Chia tập theo thời gian (walk-forward), xấp xỉ tỉ lệ 12/3/3
 TRAIN_END = pd.Timestamp("2025-09-01")
 VAL_END   = pd.Timestamp("2025-11-01")
 
-train = samples[samples["date"] < TRAIN_END]
-val   = samples[(samples["date"] >= TRAIN_END) & (samples["date"] < VAL_END)]
+# NEW: loại các mẫu có target_date vượt ranh giới split (horizon leakage) —
+# một mẫu "train" không được phép có nhãn target_spend rơi vào ngày thuộc
+# vùng validation/test, kể cả khi ngày quyết định (date) vẫn nằm bên train.
+n_leak_train = ((samples["date"] < TRAIN_END) & (samples["target_date"] >= TRAIN_END)).sum()
+n_leak_val   = ((samples["date"] >= TRAIN_END) & (samples["date"] < VAL_END)
+                 & (samples["target_date"] >= VAL_END)).sum()
+print(f"Đã loại {n_leak_train:,} mẫu train và {n_leak_val:,} mẫu validation "
+      f"do horizon leakage (target_date vượt ranh giới split).")
+
+train = samples[(samples["date"] < TRAIN_END) & (samples["target_date"] < TRAIN_END)]
+val   = samples[(samples["date"] >= TRAIN_END) & (samples["date"] < VAL_END)
+                & (samples["target_date"] < VAL_END)]
 test  = samples[samples["date"] >= VAL_END]
 
 print(f"Train: {len(train):,} mẫu | Validation: {len(val):,} mẫu | Test: {len(test):,} mẫu")
 
-# ============================================================
-# Huấn luyện XGBoost (một model chung, h là một đặc trưng)
-# ============================================================
+# Huấn luyện XGBoost
 dtrain = xgb.DMatrix(train[FEATURE_COLS], label=train["target_spend"])
 dval = xgb.DMatrix(val[FEATURE_COLS], label=val["target_spend"])
 dtest = xgb.DMatrix(test[FEATURE_COLS])
@@ -136,10 +139,8 @@ test = test.copy()
 val["pred_spend"]  = model.predict(dval)
 test["pred_spend"] = model.predict(dtest)
 
-# ============================================================
 # Xuất file — pattern CHỈ xuất hiện ở đây (để phân tích Bước 6),
 # không hề có mặt trong FEATURE_COLS đã dùng để huấn luyện ở trên
-# ============================================================
 OUT_COLS = [
     "user_id", "date", "target_date", "cycle_id", "day_in_cycle", "D", "remaining_days", "h",
     "pattern",
@@ -154,10 +155,8 @@ for split_name, split_df in [("validation", val), ("test", test)]:
     out = split_df[OUT_COLS].copy()
     out.to_csv(f"outputs/forecast_{split_name}.csv", index=False)
 
-# ============================================================
 # Sanity check: MAE so với baseline B1 (avg14), tách sơ bộ theo pattern
 # (đánh giá đầy đủ thuộc Bước 6)
-# ============================================================
 def mae(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
 
@@ -172,19 +171,21 @@ for name, split in [("Validation", val), ("Test", test)]:
 
 print("\nĐã lưu: forecast_validation.csv, forecast_test.csv")
 
-# ============================================================
 # Tính toán Rủi ro dòng tiền (Aggregated Cashflow Risk)
-# ============================================================
 risk_frames = []
 for split_name, split_df in [("validation", val), ("test", test)]:
     # Nhóm theo từng ngày t để dự phóng phần còn lại của chu kỳ
     agg = split_df.groupby(["user_id", "date", "cycle_id", "remaining_days"]).agg(
         current_balance=("balance", "first"),
+        theta_t=("theta_t", "first"),
         expected_total_spend=("pred_spend", "sum")
     ).reset_index()
-    
+
     agg["projected_end_balance"] = agg["current_balance"] - agg["expected_total_spend"]
-    agg["risk_flag"] = (agg["projected_end_balance"] < 0).astype(int)
+
+    SAFETY_MARGIN = 1.0
+    agg["risk_threshold"] = SAFETY_MARGIN * agg["theta_t"].fillna(0)
+    agg["risk_flag"] = (agg["projected_end_balance"] < agg["risk_threshold"]).astype(int)
     agg["split"] = split_name
     risk_frames.append(agg)
 
