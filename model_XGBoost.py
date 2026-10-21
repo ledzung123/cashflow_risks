@@ -17,14 +17,10 @@ df["cycle_id"] = new_cycle_mask.astype(int).groupby(df["user_id"]).cumsum()
 df["D"] = df["day_in_cycle"] + df["days_to_next_income"] - 1
 df = df.sort_values(["user_id", "cycle_id", "day_in_cycle"]).reset_index(drop=True)
 
-# Bước 3 (một phần, tính nội bộ — KHÔNG lưu trong daily.csv gốc):
-# theta_t = trung bình chi tiêu 14 ngày gần nhất tại ngày t, chỉ dùng
-# dữ liệu <= ngày t-1 (shift(1) trước khi rolling, tránh leak chính ngày t)
+# theta_t = trung bình chi tiêu 14 ngày gần nhất tại ngày t
 g_user = df.sort_values(["user_id", "date"]).groupby("user_id")["spend"]
 df = df.sort_values(["user_id", "date"]).reset_index(drop=True)
 df["theta_t"] = g_user.transform(lambda s: s.shift(1).rolling(14, min_periods=5).mean())
-
-# Đặc trưng "backward-looking" — chỉ dùng spend đến trước ngày t
 g = df.groupby("user_id")["spend"]
 df["avg7"]  = g.transform(lambda s: s.shift(1).rolling(7,  min_periods=3).mean())
 df["avg14"] = g.transform(lambda s: s.shift(1).rolling(14, min_periods=5).mean())
@@ -33,9 +29,6 @@ df["std14"] = g.transform(lambda s: s.shift(1).rolling(14, min_periods=5).std())
 df["sum7"]  = g.transform(lambda s: s.shift(1).rolling(7,  min_periods=3).sum())
 df["balance_over_theta"] = df["balance"] / df["theta_t"].replace(0, np.nan)
 
-# NEW: Chuẩn hóa theo từng người: chia các đặc trưng tuyệt đối cho theta_t (baseline
-# chi tiêu riêng của chính user đó) để một model chung không bị lệch bởi scale
-# thu nhập/chi tiêu khác nhau tới ~4 lần giữa các user.
 for _col in ["avg7", "avg14", "avg28", "std14", "sum7"]:
     df[f"{_col}_rel"] = df[_col] / df["theta_t"].replace(0, np.nan)
 
@@ -50,9 +43,9 @@ decision_rows = df[df["remaining_days"] >= MIN_REMAINING_DAYS].copy()
 print(f"Số điểm quyết định (remaining_days >= {MIN_REMAINING_DAYS}): "
       f"{len(decision_rows):,} / {len(df):,} dòng gốc")
 
-# Sinh mẫu "direct multi-horizon": với mỗi h, lấy target bằng cách
+# Sinh mẫu direct multi-horizon: với mỗi h, lấy target bằng cách
 # shift(-h) TRONG CÙNG (user_id, cycle_id) -> nếu h vượt quá chu kỳ,
-# pandas tự trả NaN (không bị lẫn sang chu kỳ kế tiếp) -> sẽ tự loại các h không hợp lệ, không cần tính max_h thủ công.
+# pandas tự trả NaN -> tự loại các h không hợp lệ
 cycle_sorted = df.sort_values(["user_id", "cycle_id", "day_in_cycle"])
 cycle_group = cycle_sorted.groupby(["user_id", "cycle_id"])["spend"]
 
@@ -65,8 +58,6 @@ for h in range(1, GLOBAL_MAX_H + 1):
     tmp["target_date"] = target_date
     tmp["target_weekday"] = target_date.dt.weekday
     tmp["target_is_weekend"] = (tmp["target_weekday"] >= 5).astype(int)
-    # vì h bị giới hạn trong cùng chu kỳ, ngày-trong-chu-kỳ của ngày đích
-    # chỉ đơn giản là cộng dồn (không cần tra bảng)
     tmp["target_day_in_cycle"] = tmp["day_in_cycle"] + h
 
     # lấy target_spend bằng shift(-h) trong đúng nhóm (user_id, cycle_id)
@@ -89,12 +80,11 @@ FEATURE_COLS = (
 assert "pattern" not in FEATURE_COLS, "LỖI: pattern là nhãn thật, không được dùng làm đặc trưng!"
 assert "pattern" not in samples[FEATURE_COLS].columns
 
-# Chia tập theo thời gian (walk-forward), xấp xỉ tỉ lệ 12/3/3
 TRAIN_END = pd.Timestamp("2026-01-01")
 CALIB_END = pd.Timestamp("2026-03-01")
 VAL_END   = pd.Timestamp("2026-05-01")
 
-BLOCKS = [  # (tên, ngày bắt đầu, ngày kết thúc [loại trừ])
+BLOCKS = [
     ("train",       None,      TRAIN_END),
     ("calibration", TRAIN_END, CALIB_END),
     ("validation",  CALIB_END, VAL_END),
@@ -102,8 +92,7 @@ BLOCKS = [  # (tên, ngày bắt đầu, ngày kết thúc [loại trừ])
 ]
  
 def take_block(df_, start, end):
-    """Lấy mẫu có ngày quyết định t trong [start, end) VÀ ngày đích t+h < end
-    (purge: nhãn không được rơi sang khối kế tiếp -> không rò rỉ horizon)."""
+    # Lấy mẫu có ngày quyết định t trong [start, end) VÀ ngày đích t+h < end
     m = pd.Series(True, index=df_.index)
     if start is not None:
         m &= df_["date"] >= start
@@ -121,12 +110,7 @@ print(f"Đã purge {n_purged:,} mẫu có target_date vượt ranh giới khối
 print(f"Train: {len(train):,} | Calibration: {len(calib):,} | "
       f"Validation: {len(val):,} | Test: {len(test):,} mẫu")
  
-# ============================================================
-# Huấn luyện XGBoost CHỈ trên khối Train (một model chung, h là đặc trưng).
-# Early stopping dùng 30 ngày CUỐI của chính khối Train (có purge) làm tập
-# giữ lại nội bộ; sau đó fit lại trên toàn bộ Train với số cây đã chọn.
-# -> Calibration / Validation / Test không tham gia huấn luyện hay chọn cây.
-# ============================================================
+# Huấn luyện XGBoost
 params = {
     "max_depth": 4,
     "learning_rate": 0.05,
@@ -139,7 +123,7 @@ params = {
  
 INNER_START = TRAIN_END - pd.Timedelta(days=30)
 fit_part = take_block(train, None, INNER_START)
-es_part  = train[(train["date"] >= INNER_START)]          # đã purge theo TRAIN_END
+es_part  = train[(train["date"] >= INNER_START)]
  
 d_fit = xgb.DMatrix(fit_part[FEATURE_COLS], label=fit_part["target_spend"])
 d_es  = xgb.DMatrix(es_part[FEATURE_COLS],  label=es_part["target_spend"])
@@ -152,13 +136,11 @@ print(f"Số cây chọn bằng early stopping nội bộ trong Train: {N_TREES}
 dtrain = xgb.DMatrix(train[FEATURE_COLS], label=train["target_spend"])
 model = xgb.train(params, dtrain, num_boost_round=N_TREES, verbose_eval=False)
  
-# ============================================================
-# Dự báo + sai số ngoài mẫu e(t+h|t) = y(t+h) - ŷ(t+h|t), kèm chỉ số h
-# ============================================================
+# Dự báo + sai số 
 out_blocks = {"calibration": calib.copy(), "validation": val.copy(), "test": test.copy()}
 for name, blk in out_blocks.items():
     blk["pred_spend"] = model.predict(xgb.DMatrix(blk[FEATURE_COLS]))
-    blk["error"] = blk["target_spend"] - blk["pred_spend"]      # e(t+h|t)
+    blk["error"] = blk["target_spend"] - blk["pred_spend"]
     blk["abs_error"] = blk["error"].abs()
     blk["split"] = name
  
@@ -178,10 +160,7 @@ os.makedirs("outputs", exist_ok=True)
 for name, blk in out_blocks.items():
     blk[OUT_COLS].to_csv(f"outputs/forecast_{name}.csv", index=False) 
  
-# ============================================================
 # Sanity check: MAE so với baseline B1 (avg14) và theo h / pattern
-# (đánh giá đầy đủ thuộc Bước 6)
-# ============================================================
 def mae(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
  
@@ -195,13 +174,11 @@ for name, blk in out_blocks.items():
  
 print("\nĐã lưu: forecast_calibration.csv, forecast_validation.csv, forecast_test.csv")
  
-# ============================================================
-# Tính toán Rủi ro dòng tiền (Aggregated Cashflow Risk)
-# ============================================================
+# Tính toán Rủi ro dòng tiền
 risk_frames = []
 SAFETY_MARGIN = 1.0
 for split_name, split_df in out_blocks.items():
-    # Nhóm theo từng ngày t để dự phóng phần còn lại của chu kỳ
+    # Nhóm theo từng ngày t 
     agg = split_df.groupby(["user_id", "date", "cycle_id", "remaining_days"]).agg(
         current_balance=("balance", "first"),
         theta_t=("theta_t", "first"),
@@ -211,7 +188,7 @@ for split_name, split_df in out_blocks.items():
     agg["projected_end_balance"] = agg["current_balance"] - agg["expected_total_spend"]
  
     # Ngưỡng rủi ro so với θ (đệm an toàn = SAFETY_MARGIN ngày chi tiêu trung
-    # bình của chính user đó) thay vì so cứng với 0.
+    # bình của chính user đó)
     agg["risk_threshold"] = SAFETY_MARGIN * agg["theta_t"].fillna(0)
     agg["risk_flag"] = (agg["projected_end_balance"] < agg["risk_threshold"]).astype(int)
     agg["split"] = split_name
