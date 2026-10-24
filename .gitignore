@@ -1,0 +1,13 @@
+# Tệp báo cáo và bản nháp trình bày không đưa lên GitHub
+*.docx
+*.pdf
+SLIDE_NHAP.md
+.document_update_*/
+
+# Tệp tạm của các lần chạy
+.pipeline_tmp/
+__pycache__/
+*.py[cod]
+node_modules/
+.DS_Store
+Thumbs.db

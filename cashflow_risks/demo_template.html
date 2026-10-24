@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cảnh báo sớm thiếu tiền trước kỳ nhận thu nhập</title>
+<style>
+:root{
+  --paper:#F4F7F6; --ink:#16302F; --muted:#586C6A; --rule:#CBD8D5;
+  --balance:#1E5E8A; --forecast:#6F8290; --theta:#B7791F; --risk:#C8452D; --safe:#2F7D6D; --low:#E4EEEC;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans);font-variant-numeric:tabular-nums}
+main{max-width:980px;margin:0 auto;padding:28px 20px 56px}
+h1{font:600 1.7rem/1.25 var(--serif);margin:0 0 6px}
+h2{font:600 1.05rem/1.3 var(--sans);margin:0 0 6px}
+p{margin:0}
+.lede{color:var(--muted);max-width:68ch}
+section{margin-top:34px;padding-top:18px;border-top:1px solid var(--rule)}
+.controls{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:end;margin-top:22px}
+.controls label{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:3px;padding:7px 10px;min-width:210px}
+.check{flex-direction:row!important;align-items:center;gap:8px!important;color:var(--ink)!important;padding-bottom:8px}
+select:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--balance);outline-offset:2px}
+.hint{color:var(--muted);font-size:.92rem;max-width:72ch;margin-bottom:12px}
+#strip{display:flex;flex-wrap:wrap;gap:4px}
+.cell{width:calc((100% - 4px*(var(--n) - 1))/var(--n));min-width:28px;height:52px;border:1px solid transparent;border-radius:2px;padding:0;cursor:pointer;
+  font:600 .8rem var(--sans);color:var(--ink);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;background:var(--low)}
+.cell.alert{border:2px solid var(--ink)}
+.cell.sel{outline:3px solid var(--balance);outline-offset:2px}
+.cell.below{background:repeating-linear-gradient(135deg,#E8D9D4 0 5px,#F4E9E5 5px 10px);color:#7A3A2B}
+.cell.late{background:#EAEFEE;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px;font-size:.88rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:18px;height:12px;border-radius:2px;display:inline-block;border:1px solid transparent}
+#verdict{font:600 1.55rem/1.3 var(--serif);margin:6px 0 18px;max-width:30ch}
+#verdict.risk{color:var(--risk)} #verdict.safe{color:var(--safe)} #verdict.info{color:var(--muted)}
+#flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+#flow li{padding:0 18px 0 0;margin-right:18px;border-right:1px solid var(--rule)}
+#flow li:last-child{border-right:0;margin-right:0;padding-right:0}
+#flow .step{font-weight:600;font-size:.92rem;margin-bottom:4px}
+#flow .val{font:600 1.25rem/1.25 var(--serif)}
+#flow .sub{color:var(--muted);font-size:.88rem;margin-top:2px}
+#why{margin-top:16px;font-size:.92rem;max-width:80ch}
+#why:empty{display:none}
+#why b{font-weight:600}
+#chart svg{width:100%;height:auto;display:block}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:.88rem}
+td.yes{color:var(--risk);font-weight:600} td.no{color:var(--safe);font-weight:600}
+footer{margin-top:38px;color:var(--muted);font-size:.9rem;max-width:76ch}
+footer p+p{margin-top:8px}
+@media (max-width:720px){
+  #flow{grid-template-columns:1fr;gap:16px}
+  #flow li{border-right:0;border-bottom:1px solid var(--rule);padding:0 0 14px;margin-right:0}
+  #flow li:last-child{border-bottom:0}
+  select{min-width:100%} .controls label{width:100%}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Cảnh báo sớm thiếu tiền trước kỳ nhận thu nhập</h1>
+  <p class="lede">Chọn một người, một chu kỳ và một ngày để xem hệ thống dự báo chi tiêu, tính khả năng thiếu tiền và quyết định có cảnh báo hay không. <strong id="source"></strong></p>
+</header>
+
+<div class="controls">
+  <label>Người dùng<select id="selUser"></select></label>
+  <label>Chu kỳ<select id="selCycle"></select></label>
+  <label class="check"><input type="checkbox" id="reveal"> Hiện kết quả thật của chu kỳ</label>
+</div>
+<p class="hint" id="userNote" style="margin-top:10px"></p>
+
+<section aria-labelledby="h-strip">
+  <h2 id="h-strip">Rủi ro theo từng ngày của chu kỳ</h2>
+  <p class="hint">Mỗi ô là một ngày. Màu càng đậm thì khả năng thiếu tiền càng cao, ô có viền đen là ngày hệ thống cảnh báo. Bấm vào ô hoặc dùng phím mũi tên trái và phải để đổi ngày.</p>
+  <div id="strip" role="group" aria-label="Rủi ro từng ngày"></div>
+  <div class="legend">
+    <span><i class="sw" style="background:#E4EEEC"></i>khả năng thấp</span>
+    <span><i class="sw" style="background:#C8452D"></i>khả năng cao</span>
+    <span><i class="sw" style="background:#fff;border:2px solid #16302F"></i>hệ thống cảnh báo</span>
+    <span><i class="sw" style="background:repeating-linear-gradient(135deg,#E8D9D4 0 5px,#F4E9E5 5px 10px)"></i>số dư đã dưới ngưỡng</span>
+    <span><i class="sw" style="background:#EAEFEE"></i>còn dưới 3 ngày, không dự báo</span>
+  </div>
+</section>
+
+<section aria-labelledby="h-flow">
+  <h2 id="h-flow">Hệ thống làm gì vào ngày này</h2>
+  <p id="verdict" aria-live="polite"></p>
+  <ol id="flow"></ol>
+  <p id="why" aria-live="polite"></p>
+</section>
+
+<section aria-labelledby="h-chart">
+  <h2 id="h-chart">Số dư và dự báo</h2>
+  <div id="chart"></div>
+</section>
+
+<section aria-labelledby="h-cmp">
+  <h2 id="h-cmp">So với cách chia số dư cho chi tiêu trung bình</h2>
+  <table id="cmp"></table>
+</section>
+
+<footer>
+  <p>Ngưỡng an toàn θ là mức chi tiêu trung bình một ngày của chính người đó. Người dùng bị coi là thiếu tiền nếu số dư cuối chu kỳ thấp hơn θ. Hệ thống cảnh báo khi xác suất vượt ngưỡng τ, được chọn trên một tập dữ liệu riêng.</p>
+  <p>B1 dùng chi tiêu trung bình 14 ngày gần nhất, B2 dùng chi tiêu trung bình cùng thứ trong tuần; cả hai cảnh báo theo một biên được chọn trên cùng tập dữ liệu đó.</p>
+  <p id="limit"></p>
+</footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+const DATA = __DATA__;
+const $ = id => document.getElementById(id);
+const S = {u:0, c:0, t:1, reveal:false};
+
+function money(vk){
+  const a = Math.abs(vk), s = vk < 0 ? "−" : "";
+  return a >= 1000 ? s + (a/1000).toFixed(2).replace(".", ",") + " triệu" : s + Math.round(a) + " nghìn";
+}
+const pct = p => Math.round(p*100) + "%";
+function mix(p){
+  const a=[228,238,236], b=[200,69,45], t=Math.pow(Math.min(Math.max(p,0),1),0.8);
+  return "rgb(" + a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(",") + ")";
+}
+function cyc(){ return DATA.users[S.u].cycles[S.c]; }
+function dateOf(cy, t){
+  const d = new Date(cy.start + "T00:00:00"); d.setDate(d.getDate() + t - 1);
+  return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0");
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function fillUsers(){
+  $("selUser").innerHTML = DATA.users.map((u,i)=>'<option value="'+i+'">'+esc(u.label)+'</option>').join("");
+}
+function fillCycles(){
+  const u = DATA.users[S.u];
+  $("selCycle").innerHTML = u.cycles.map((c,i)=>'<option value="'+i+'">Chu kỳ bắt đầu ngày '+dateOf(c,1)+" ("+c.L+" ngày)</option>").join("");
+  $("userNote").textContent = u.note || "";
+}
+function defaultDay(){
+  const days = cyc().days, firstAlert = days.find(d=>d.st==="p" && d.al);
+  if (firstAlert) return firstAlert.t;
+  const pr = days.filter(d=>d.st==="p");
+  return pr.length ? pr[Math.floor(pr.length/2)].t : 1;
+}
+
+function renderStrip(){
+  const cy = cyc();
+  $("strip").style.setProperty("--n", cy.L);
+  $("strip").innerHTML = cy.days.map(d=>{
+    let cls = "cell", style = "", label = "Ngày "+d.t+" ("+dateOf(cy,d.t)+"): ";
+    if (d.st==="p"){ style = ' style="background:'+mix(d.p)+(d.p>0.6?";color:#fff":"")+'"'; if (d.al) cls += " alert"; label += "khả năng thiếu tiền "+pct(d.p)+(d.al?", cảnh báo":""); }
+    else if (d.st==="b"){ cls += " below"; label += "số dư đã dưới ngưỡng"; }
+    else { cls += " late"; label += "còn dưới 3 ngày, không dự báo"; }
+    if (d.t===S.t) cls += " sel";
+    return '<button type="button" class="'+cls+'"'+style+' data-t="'+d.t+'" aria-label="'+esc(label)+'" aria-pressed="'+(d.t===S.t)+'">'+d.t+'</button>';
+  }).join("");
+}
+
+function projected(day){
+  let b = day.b; const path=[b];
+  day.y.forEach(v=>{ b -= v; path.push(b); });
+  return path;
+}
+function hitDay(cy, day){
+  if (day.st!=="p") return null;
+  const path = projected(day);
+  for (let h=1; h<path.length; h++) if (path[h] < cy.theta) return day.t + h;
+  return null;
+}
+
+function renderFlow(){
+  const cy = cyc(), day = cy.days[S.t-1], N = cy.L - day.t;
+  const v = $("verdict"), flow = $("flow");
+  let steps;
+  if (day.st==="p"){
+    const tot = day.y.reduce((a,b)=>a+b,0), hit = hitDay(cy, day);
+    const room = day.b - cy.theta;
+    steps = [
+      ["1. Biết đến hết ngày "+day.t, money(day.b), "số dư hiện tại, còn "+N+" ngày đến kỳ nhận tiền (ngày "+dateOf(cy,cy.L+1)+")"],
+      ["2. Dự báo chi tiêu "+N+" ngày còn lại", money(tot), "khoảng "+money(tot/N)+" mỗi ngày"],
+      ["3. Khả năng chi vượt mức cho phép", pct(day.p), "mức cho phép: "+money(room)+" (số dư trừ ngưỡng θ = "+money(cy.theta)+")"],
+      ["4. Quyết định", day.al ? "Cảnh báo" : "Không cảnh báo", "so với ngưỡng τ = "+pct(DATA.meta.tau)+(hit?"; số dư dự kiến chạm θ vào ngày "+dateOf(cy,hit):"; số dư dự kiến không chạm θ")]
+    ];
+    if (day.al){ v.className="risk"; v.textContent = "Có nguy cơ: khả năng thiếu tiền trước kỳ nhận là "+pct(day.p)+"."; }
+    else { v.className="safe"; v.textContent = "Tạm an toàn: khả năng thiếu tiền chỉ "+pct(day.p)+", dưới ngưỡng cảnh báo."; }
+  } else if (day.st==="b"){
+    steps = [["1. Biết đến hết ngày "+day.t, money(day.b), "số dư hiện tại"],["2. Dự báo","Không cần","số dư đã dưới ngưỡng θ = "+money(cy.theta)],["3. Khả năng","—",""],["4. Quyết định","Đã thiếu","hệ thống không còn cảnh báo sớm"]];
+    v.className="risk"; v.textContent = "Số dư đã xuống dưới ngưỡng, không còn là cảnh báo sớm.";
+  } else {
+    steps = [["1. Biết đến hết ngày "+day.t, money(day.b), "số dư hiện tại"],["2. Dự báo","Bỏ qua","còn "+(cy.L-day.t)+" ngày"],["3. Khả năng","—",""],["4. Quyết định","Không dự báo","quá gần ngày nhận tiền"]];
+    v.className="info"; v.textContent = "Còn dưới 3 ngày đến kỳ nhận tiền, hệ thống không dự báo.";
+  }
+  flow.innerHTML = steps.map(s=>'<li><div class="step">'+esc(s[0])+'</div><div class="val">'+esc(s[1])+'</div><div class="sub">'+esc(s[2])+'</div></li>').join("");
+  // Lý do (SHAP): yếu tố làm tăng / giảm dự báo tổng chi nhiều nhất, tính bằng nghìn đồng như các số khác
+  const why = $("why");
+  if (day.st==="p" && day.w && (day.w.up.length || day.w.down.length)){
+    const fmt = a => a.map(x=>esc(x[0])+" ("+(x[1]>0?"+":"−")+money(Math.abs(x[1]))+")").join(", ");
+    why.innerHTML = "<b>Vì sao dự báo chi như vậy</b> (đóng góp vào tổng chi dự báo, theo SHAP): "
+      + (day.w.up.length ? "làm tăng: "+fmt(day.w.up) : "")
+      + (day.w.up.length && day.w.down.length ? "; " : "")
+      + (day.w.down.length ? "làm giảm: "+fmt(day.w.down) : "") + ".";
+  } else why.innerHTML = "";
+}
+
+function renderChart(){
+  const cy = cyc(), day = cy.days[S.t-1], L = cy.L, t = day.t;
+  const W=760,H=300,ml=66,mr=20,mt=16,mb=38;
+  const xs = d => ml + (d-1)/(L-1)*(W-ml-mr);
+  const known = cy.days.slice(0,t).map(x=>x.b);
+  const proj = day.st==="p" ? projected(day) : [];
+  const real = cy.days.map(x=>x.b);
+  let vals = known.concat(proj, [cy.theta, 0]); if (S.reveal) vals = vals.concat(real);
+  let lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  const pad = (hi-lo)*0.08 || 1; lo -= pad; hi += pad;
+  const ys = v => mt + (1-(v-lo)/(hi-lo))*(H-mt-mb);
+  const path = (arr, x0) => arr.map((v,i)=>(i?"L":"M")+xs(x0+i).toFixed(1)+" "+ys(v).toFixed(1)).join(" ");
+  let g = "";
+  for (let i=0;i<=4;i++){ const v = lo+(hi-lo)*i/4, y=ys(v).toFixed(1);
+    g += '<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+y+'" y2="'+y+'" stroke="#DCE5E3"/><text x="'+(ml-8)+'" y="'+(+y+4)+'" text-anchor="end" font-size="12" fill="#586C6A">'+(v/1000).toFixed(1).replace(".",",")+'</text>'; }
+  g += '<text x="'+(ml-8)+'" y="'+(mt-4)+'" text-anchor="end" font-size="11" fill="#586C6A">triệu</text>';
+  for (let d=1; d<=L; d+= (L>20?5:3)){ g += '<text x="'+xs(d)+'" y="'+(H-mb+20)+'" text-anchor="middle" font-size="12" fill="#586C6A">'+d+'</text>'; }
+  g += '<text x="'+((ml+W-mr)/2)+'" y="'+(H-4)+'" text-anchor="middle" font-size="12" fill="#586C6A">ngày trong chu kỳ</text>';
+  if (lo<0 && hi>0) g += '<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+ys(0)+'" y2="'+ys(0)+'" stroke="#16302F" stroke-width="1"/>';
+  g += '<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+ys(cy.theta)+'" y2="'+ys(cy.theta)+'" stroke="#B7791F" stroke-width="1.6" stroke-dasharray="2 4"/>';
+  g += '<text x="'+(W-mr)+'" y="'+(ys(cy.theta)-6)+'" text-anchor="end" font-size="12" fill="#B7791F">ngưỡng θ</text>';
+  if (S.reveal) g += '<path d="'+path(real.slice(t-1), t)+'" fill="none" stroke="#9AA9A6" stroke-width="2.5"/>';
+  g += '<path d="'+path(known, 1)+'" fill="none" stroke="#1E5E8A" stroke-width="2.6"/>';
+  if (proj.length) g += '<path d="'+path(proj, t)+'" fill="none" stroke="#6F8290" stroke-width="2.4" stroke-dasharray="7 5"/>';
+  g += '<line x1="'+xs(t)+'" x2="'+xs(t)+'" y1="'+mt+'" y2="'+(H-mb)+'" stroke="#16302F" stroke-width="1" stroke-dasharray="2 3"/>';
+  g += '<circle cx="'+xs(t)+'" cy="'+ys(day.b)+'" r="4.5" fill="#1E5E8A"/>';
+  const hit = hitDay(cy, day);
+  if (hit && hit<=L) g += '<rect x="'+(xs(hit)-5)+'" y="'+(ys(cy.theta)-5)+'" width="10" height="10" transform="rotate(45 '+xs(hit)+' '+ys(cy.theta)+')" fill="#C8452D"/>';
+  const lg = '<g font-size="12" fill="#16302F"><line x1="'+ml+'" x2="'+(ml+26)+'" y1="'+(mt+4)+'" y2="'+(mt+4)+'" stroke="#1E5E8A" stroke-width="2.6"/><text x="'+(ml+32)+'" y="'+(mt+8)+'">đã xảy ra</text>'+
+    (proj.length?'<line x1="'+(ml+112)+'" x2="'+(ml+138)+'" y1="'+(mt+4)+'" y2="'+(mt+4)+'" stroke="#6F8290" stroke-width="2.4" stroke-dasharray="7 5"/><text x="'+(ml+144)+'" y="'+(mt+8)+'">dự báo</text>':'')+
+    (S.reveal?'<line x1="'+(ml+210)+'" x2="'+(ml+236)+'" y1="'+(mt+4)+'" y2="'+(mt+4)+'" stroke="#9AA9A6" stroke-width="2.5"/><text x="'+(ml+242)+'" y="'+(mt+8)+'">thực tế</text>':'')+'</g>';
+  const desc = "Số dư theo ngày; vào ngày "+t+" số dư là "+money(day.b)+(hit?", dự báo chạm ngưỡng ngày "+hit:"")+".";
+  $("chart").innerHTML = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(desc)+'">'+g+lg+'</svg>';
+}
+
+function renderTable(){
+  const cy = cyc(), day = cy.days[S.t-1];
+  let rows = "";
+  if (day.st==="p"){
+    const alert = (b)=> b ? '<td class="yes">Có</td>' : '<td class="no">Không</td>';
+    rows += "<tr><td>Hệ thống (XGBoost + xác suất)</td><td>"+money(day.e)+"</td>"+alert(day.al)+"<td>xác suất "+pct(day.p)+"</td></tr>";
+    rows += "<tr><td>B1: trung bình 14 ngày gần nhất</td><td>"+money(day.e1)+"</td>"+alert(day.a1)+"<td>nhân đều mức chi gần đây</td></tr>";
+    rows += "<tr><td>B2: trung bình cùng thứ trong tuần</td><td>"+money(day.e2)+"</td>"+alert(day.a2)+"<td>tính riêng từng thứ</td></tr>";
+  } else rows += '<tr><td colspan="4">Ngày này không có dự báo (số dư đã dưới ngưỡng hoặc còn dưới 3 ngày).</td></tr>';
+  if (S.reveal) rows += "<tr><td>Thực tế</td><td>"+money(cy.end)+"</td>"+(cy.short?'<td class="yes">Thiếu tiền</td>':'<td class="no">Đủ tiền</td>')+"<td>số dư cuối chu kỳ so với θ = "+money(cy.theta)+"</td></tr>";
+  $("cmp").innerHTML = "<thead><tr><th>Cách dự báo</th><th>Số dư dự kiến cuối chu kỳ</th><th>Cảnh báo</th><th>Ghi chú</th></tr></thead><tbody>"+rows+"</tbody>";
+}
+
+function render(){ renderStrip(); renderFlow(); renderChart(); renderTable(); }
+function setDay(t){ const L = cyc().L; S.t = Math.min(Math.max(t,1),L); render(); }
+
+function init(){
+  $("source").textContent = DATA.meta.source;
+  $("limit").textContent = DATA.meta.limit;
+  fillUsers(); fillCycles(); S.t = defaultDay(); render();
+  $("selUser").addEventListener("change", e=>{ S.u=+e.target.value; S.c=0; fillCycles(); S.t=defaultDay(); render(); });
+  $("selCycle").addEventListener("change", e=>{ S.c=+e.target.value; S.t=defaultDay(); render(); });
+  $("reveal").addEventListener("change", e=>{ S.reveal=e.target.checked; renderChart(); renderTable(); });
+  $("strip").addEventListener("click", e=>{ const b=e.target.closest("button[data-t]"); if(b) setDay(+b.dataset.t); });
+  document.addEventListener("keydown", e=>{
+    if (/^(SELECT|INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
+    if (e.key==="ArrowLeft"){ e.preventDefault(); setDay(S.t-1); }
+    if (e.key==="ArrowRight"){ e.preventDefault(); setDay(S.t+1); }
+  });
+  window.__demo = {S:S, setDay:setDay, DATA:DATA};
+}
+init();
+})();
+</script>
+</body>
+</html>

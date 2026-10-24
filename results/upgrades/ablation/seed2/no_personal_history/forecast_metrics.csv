@@ -1,0 +1,2 @@
+variant,seed,n_features,features,MAE_spend,RMSE_spend,MAE_balance,RMSE_balance,auroc,auprc,ks,pos_rate
+no_personal_history,2,17,"h,tgt_wd,tgt_weekend,tgt_dic,days_after,dic_t,D,mean7_rel,mean14_rel,std14_rel,max14_rel,last1_rel,big28,we_ratio,bal_rel,theta_rel,b2_rel",110914.07646906533,231461.5202412061,641840.6826164977,1050021.4185026076,0.8771222326468395,0.7911527186701,0.6036803729180289,0.2848050173869846

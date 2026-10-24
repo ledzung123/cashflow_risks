@@ -1,0 +1,7 @@
+group,value,pos_rate_mean,pos_rate_std,false_alarm_rate_mean,false_alarm_rate_std,miss_rate_mean,miss_rate_std
+income_type,allowance_1st,0.2955,0.0223,0.4116,0.0081,0.0219,0.0078
+income_type,salary_25,0.295,0.0167,0.4294,0.0574,0.0153,0.0149
+pattern,even,0.2722,0.0135,0.2904,0.0648,0.0325,0.0061
+pattern,front,0.2867,0.0433,0.3849,0.0179,0.0,0.0
+pattern,spike,0.3444,0.0283,0.5422,0.1021,0.0336,0.0355
+pattern,weekend,0.2778,0.043,0.4752,0.0467,0.0038,0.0066

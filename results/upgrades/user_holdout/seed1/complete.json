@@ -1,0 +1,38 @@
+{
+  "signature": {
+    "seed": 1,
+    "mode": "user_holdout",
+    "dropped": [],
+    "K": 500,
+    "sources": {
+      "run_risk.py": "74cca0967208026824e774b5a54edbe54092182294f51133a8d8ed991305671b",
+      "run_baselines.py": "9150c0fff65684f1fd75860c269cfc73da7e69851e0cb865421bfea33f2d6da2",
+      "model_xgb.py": "220c4a8f83501fd381092924b3e8a8645565b968fa53a16895f78846a5aff26e",
+      "features.py": "ce3457da6238b12758c3af375b83b4eef5c365e79147bc4f5ab72807f1085edf",
+      "simulate.py": "0d979b3cca4d29512bb0d35731634d8d1790c581b28223300926adb9f3d237a0",
+      "labels.py": "50daa20c40e66a30f2a49baf1f3639c885a7b0c619c5b7c8a3f0e9059503ead0",
+      "baselines.py": "523422f12755da8e0e67e1974e713f40cca7691fbedcbcef44be0c888146f768",
+      "risk.py": "edc65bc247964fabac8fcd5c9f7ecc22f21d3d26f73c9c30ef65b52021e09dcf",
+      "prob_metrics.py": "70cc92c97c8e6dc8003f9e0c35090a5fe5dc2fd496ecc64a1bdf167077874078",
+      "evaluate.py": "6a77fc596c261e97570c0a3cc4298a4eb6c72aae901375123a778853c6614b52",
+      "policies.py": "3ee812e16bcb2d9946c60f3544d2ef39de74b06ca2f1096a0200bfb86fb7cc8a"
+    },
+    "runtime": {
+      "python": "3.13.9",
+      "numpy": "2.4.1",
+      "pandas": "2.3.3",
+      "xgboost": "3.4.1",
+      "sklearn": "1.8.0"
+    }
+  },
+  "artifacts": {
+    "forecasts.npz": "7a09cc8c3c731323d520f0194153a0b0858ab1d53e29c365b7b9c334e79df965",
+    "model.ubj": "ce8de631f84b45d11485d25a4db65b4c62f0728339b80984e4f3cf20928bdafb",
+    "policies.csv": "3ef7a06865ae6ca7449b9de11201ecad24406a614f8b41bd2ab8a76c01c4e436",
+    "q1.csv": "34a08c4a51e1257016e836fdb1873d8e2efdaeb6dc5f0fd688081441d8d99f8a",
+    "risk_methods.csv": "deddd275b11ed7c629209247e8734e65526446dff841487cb379ca497d38c2f3",
+    "selection.json": "82168426ca0f7f9d1676b33882145269e8ec39c09276b4c4cc080fafc1e6d710",
+    "test_scores.csv": "af27a14d1a5f0d7e39a318c9e0d404ad1fb6101e19fca17c2d0c6bac7ebc176e",
+    "val_scores.csv": "2c185f0f48bd91bcfddacc8e862dd1f137ac78629383a2e2b381a592cc1ab55e"
+  }
+}

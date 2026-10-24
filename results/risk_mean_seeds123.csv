@@ -1,0 +1,4 @@
+model,p_star,precision,recall,f1,cycle_recall,cycle_false_alarm,mean_days_early,brier_test,ece_test
+B2+risk,0.4267,0.6372,0.735,0.6813,0.9709,0.4156,22.2098,0.1292,0.0624
+XGB+risk,0.3133,0.6585,0.7517,0.7015,0.9832,0.4425,22.9502,0.1118,0.0129
+XGB+risk(k=2),0.2867,0.6618,0.7134,0.686,0.9719,0.4097,21.9436,0.1118,0.0129

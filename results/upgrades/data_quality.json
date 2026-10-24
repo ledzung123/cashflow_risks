@@ -1,0 +1,20 @@
+{
+  "source": "cashflow_risks\\data\\example_user.csv",
+  "source_sha256": "4d8c7a208e38f7542507299fcc7492647fc8693a0f08901edfa605f9a4070be5",
+  "rows_complete_cycles": 334,
+  "quality": {
+    "so_dong": 365,
+    "o_trong_hoac_loi": 0,
+    "dong_chi_am": 0,
+    "tong_chi_am": 0.0,
+    "ngay_thieu": 0,
+    "nguong_ngoai_lai": 3070000.0,
+    "ngay_ngoai_lai": 0,
+    "so_du_thieu": 0,
+    "missing_policy": "error",
+    "balance_policy": "error",
+    "transformations": [],
+    "imputation_assumption": false
+  },
+  "note": "Bundled demonstration CSV; not a new real-user dataset."
+}

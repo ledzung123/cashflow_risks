@@ -1,0 +1,14 @@
+﻿scenario,K1_XGB_MAE_thap_hon_B2,K2_XGBrisk_F1_cao_hon_B1_va_B2,K3_ECE_duoi_0.03,K4_lop_xac_suat_khong_hon_nhieu,K5_cov80_trong_0.75_0.85
+base,1,1,1,1,1
+weekend_lo,1,1,1,1,1
+weekend_hi,1,1,1,1,1
+front_lo,1,1,1,1,1
+front_hi,1,1,1,1,1
+noise_lo,1,1,1,1,1
+noise_hi,1,1,1,1,1
+spike_lo,1,1,1,1,1
+spike_hi,1,1,1,1,1
+shock_lo,1,1,1,1,1
+shock_hi,1,1,1,1,1
+rho_lo,1,1,1,0,1
+rho_hi,1,1,1,1,1

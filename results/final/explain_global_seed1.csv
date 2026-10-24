@@ -1,0 +1,21 @@
+feature,mo_ta,mean_abs_vnd,mean_vnd_khi_canh_bao
+bal_rel,số dư hiện tại,345652.0,-426466.0
+hist_smooth_rel,chi quanh ngày-trong-chu-kỳ đó ở các chu kỳ trước,133032.0,-99970.0
+dic_t,hôm nay là ngày thứ mấy của chu kỳ,92790.0,-38456.0
+we_ratio,chi cuối tuần so với ngày thường,75302.0,-93482.0
+b2_rel,dự báo B2 (TB cùng thứ),67214.0,29200.0
+D,số ngày còn lại đến kỳ nhận tiền,64913.0,7646.0
+tgt_wd,thứ trong tuần của ngày dự báo,51692.0,67399.0
+big28,số ngày chi lớn trong 28 ngày,44849.0,-31548.0
+mean7_rel,chi TB 7 ngày gần nhất,34617.0,5707.0
+theta_rel,ngưỡng θ,33437.0,5433.0
+mean14_rel,chi TB 14 ngày gần nhất,30956.0,9842.0
+max14_rel,khoản chi lớn nhất 14 ngày,21808.0,4458.0
+h,số ngày tính từ hôm nay đến ngày dự báo,21260.0,-694.0
+last1_rel,chi hôm nay,17515.0,-2421.0
+std14_rel,độ dao động chi 14 ngày,13189.0,3825.0
+n_prev,số chu kỳ lịch sử,10056.0,4819.0
+tgt_weekend,ngày dự báo rơi vào cuối tuần,8061.0,4605.0
+hist_dic_rel,chi cùng ngày-trong-chu-kỳ ở các chu kỳ trước,7925.0,-3113.0
+tgt_dic,vị trí ngày dự báo trong chu kỳ,6099.0,759.0
+days_after,số ngày còn lại sau ngày dự báo,5442.0,-2547.0

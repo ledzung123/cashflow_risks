@@ -1,0 +1,14 @@
+{
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "bootstrap_replicates": 500,
+  "stage": "analysis",
+  "report_sha256_unchanged": "74774693b8843de692d30812df7938d6f41d74337c8b1d7b11f7db98335dde03",
+  "analysis_sources": {
+    "run_upgrade.py": "7b4761fd483765f305bd73066e5279bb76184b407cfb96556ed4ead36db6639d",
+    "policies.py": "3ee812e16bcb2d9946c60f3544d2ef39de74b06ca2f1096a0200bfb86fb7cc8a"
+  }
+}

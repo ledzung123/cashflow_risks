@@ -1,0 +1,23 @@
+{
+  "seed": 3,
+  "split_mode": "time",
+  "risk_method": "cumb",
+  "f1_thresholds": {
+    "XGB": -0.75,
+    "B1": -0.0,
+    "B2": 0.25,
+    "XGB+risk": 0.32000000000000006,
+    "B2+risk": 0.44000000000000006
+  },
+  "cost_ratios": [
+    1,
+    2,
+    3,
+    5,
+    10,
+    20
+  ],
+  "far_target": 0.2,
+  "threshold_source": "validation; Bayes fixed from cost ratio",
+  "cycle_population": "eligible cycles with at least one decision point"
+}

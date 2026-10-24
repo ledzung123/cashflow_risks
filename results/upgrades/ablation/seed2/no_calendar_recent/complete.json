@@ -1,0 +1,48 @@
+{
+  "signature": {
+    "seed": 2,
+    "mode": "time",
+    "dropped": [
+      "b2_rel",
+      "big28",
+      "days_after",
+      "dic_t",
+      "last1_rel",
+      "max14_rel",
+      "mean14_rel",
+      "mean7_rel",
+      "std14_rel",
+      "tgt_dic",
+      "tgt_wd",
+      "tgt_weekend",
+      "we_ratio"
+    ],
+    "K": 500,
+    "sources": {
+      "run_risk.py": "74cca0967208026824e774b5a54edbe54092182294f51133a8d8ed991305671b",
+      "run_baselines.py": "9150c0fff65684f1fd75860c269cfc73da7e69851e0cb865421bfea33f2d6da2",
+      "model_xgb.py": "220c4a8f83501fd381092924b3e8a8645565b968fa53a16895f78846a5aff26e",
+      "features.py": "ce3457da6238b12758c3af375b83b4eef5c365e79147bc4f5ab72807f1085edf",
+      "simulate.py": "0d979b3cca4d29512bb0d35731634d8d1790c581b28223300926adb9f3d237a0",
+      "labels.py": "50daa20c40e66a30f2a49baf1f3639c885a7b0c619c5b7c8a3f0e9059503ead0",
+      "baselines.py": "523422f12755da8e0e67e1974e713f40cca7691fbedcbcef44be0c888146f768",
+      "risk.py": "edc65bc247964fabac8fcd5c9f7ecc22f21d3d26f73c9c30ef65b52021e09dcf",
+      "prob_metrics.py": "70cc92c97c8e6dc8003f9e0c35090a5fe5dc2fd496ecc64a1bdf167077874078",
+      "evaluate.py": "6a77fc596c261e97570c0a3cc4298a4eb6c72aae901375123a778853c6614b52",
+      "policies.py": "3ee812e16bcb2d9946c60f3544d2ef39de74b06ca2f1096a0200bfb86fb7cc8a"
+    },
+    "runtime": {
+      "python": "3.13.9",
+      "numpy": "2.4.1",
+      "pandas": "2.3.3",
+      "xgboost": "3.4.1",
+      "sklearn": "1.8.0"
+    }
+  },
+  "artifacts": {
+    "forecasts.npz": "9135c0aeb7399c1b9f01d41df3b72dd563d6eeba7e0f9f3b25a4376932b1721b",
+    "forecast_metrics.csv": "0f822634d0a7395ed2b6c2649e123f3576afadb730aa7aa50a53adeefa07a32a",
+    "model.ubj": "4693e2cfafd816e1be10301e6d4a44512877e7cc13d8096dd61a682967d327b3",
+    "policies.csv": "dc2ad2e07e8ea7c1a6c5082f2cf262dba962da8d1bb915ad13c4ceef3c77189c"
+  }
+}

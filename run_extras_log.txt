@@ -1,0 +1,102 @@
+﻿>> python .\cashflow_risks\sensitivity.py --seed 1 --users 300
+base        xong sau 26s | tỉ lệ dương test 0.279 | F1 B2 0.668 XGB+risk 0.688 | ECE 0.008
+weekend_lo  xong sau 27s | tỉ lệ dương test 0.279 | F1 B2 0.670 XGB+risk 0.690 | ECE 0.008
+weekend_hi  xong sau 62s | tỉ lệ dương test 0.279 | F1 B2 0.666 XGB+risk 0.683 | ECE 0.009
+front_lo    xong sau 69s | tỉ lệ dương test 0.279 | F1 B2 0.678 XGB+risk 0.688 | ECE 0.009
+front_hi    xong sau 70s | tỉ lệ dương test 0.277 | F1 B2 0.659 XGB+risk 0.691 | ECE 0.008
+noise_lo    xong sau 65s | tỉ lệ dương test 0.270 | F1 B2 0.711 XGB+risk 0.743 | ECE 0.010
+noise_hi    xong sau 63s | tỉ lệ dương test 0.285 | F1 B2 0.641 XGB+risk 0.651 | ECE 0.017
+spike_lo    xong sau 61s | tỉ lệ dương test 0.278 | F1 B2 0.680 XGB+risk 0.699 | ECE 0.009
+spike_hi    xong sau 61s | tỉ lệ dương test 0.291 | F1 B2 0.677 XGB+risk 0.697 | ECE 0.011
+shock_lo    xong sau 63s | tỉ lệ dương test 0.277 | F1 B2 0.677 XGB+risk 0.699 | ECE 0.009
+shock_hi    xong sau 69s | tỉ lệ dương test 0.295 | F1 B2 0.691 XGB+risk 0.716 | ECE 0.011
+rho_lo      xong sau 65s | tỉ lệ dương test 0.168 | F1 B2 0.582 XGB+risk 0.605 | ECE 0.009
+rho_hi      xong sau 63s | tỉ lệ dương test 0.411 | F1 B2 0.756 XGB+risk 0.778 | ECE 0.015
+>> python .\cashflow_risks\sensitivity.py --seed 1 --report
+            pos_rate_test  MAE XGB so với B2 (%)  F1 XGB+risk − B2  F1 XGB+risk − B1    ece  cov80  auroc
+scenario                                                                                                 
+base                0.279                -15.903             0.019             0.042  0.008  0.797  0.879
+weekend_lo          0.279                -15.785             0.020             0.042  0.008  0.794  0.880
+weekend_hi          0.279                -16.067             0.017             0.038  0.009  0.795  0.877
+front_lo            0.279                -14.232             0.010             0.031  0.009  0.795  0.878
+front_hi            0.277                -17.509             0.032             0.059  0.008  0.796  0.882
+noise_lo            0.270                -21.038             0.032             0.061  0.010  0.796  0.914
+noise_hi            0.285                -13.627             0.010             0.024  0.017  0.797  0.851
+spike_lo            0.278                -15.756             0.019             0.046  0.009  0.791  0.888
+spike_hi            0.291                -15.418             0.021             0.046  0.011  0.793  0.886
+shock_lo            0.277                -16.059             0.022             0.054  0.009  0.798  0.886
+shock_hi            0.295                -15.698             0.025             0.038  0.011  0.795  0.887
+rho_lo              0.168                -15.973             0.023             0.044  0.009  0.796  0.874
+rho_hi              0.411                -15.726             0.021             0.041  0.015  0.796  0.891
+
+Kết luận còn đứng vững (1 = đúng):
+            K1_XGB_MAE_thap_hon_B2  K2_XGBrisk_F1_cao_hon_B1_va_B2  K3_ECE_duoi_0.03  K4_lop_xac_suat_khong_hon_nhieu  K5_cov80_trong_0.75_0.85
+scenario                                                                                                                                       
+base                             1                               1                 1                                1                         1
+weekend_lo                       1                               1                 1                                1                         1
+weekend_hi                       1                               1                 1                                1                         1
+front_lo                         1                               1                 1                                1                         1
+front_hi                         1                               1                 1                                1                         1
+noise_lo                         1                               1                 1                                1                         1
+noise_hi                         1                               1                 1                                1                         1
+spike_lo                         1                               1                 1                                1                         1
+spike_hi                         1                               1                 1                                1                         1
+shock_lo                         1                               1                 1                                1                         1
+shock_hi                         1                               1                 1                                1                         1
+rho_lo                           1                               1                 1                                0                         1
+rho_hi                           1                               1                 1                                1                         1
+
+Số kịch bản mà mỗi kết luận đúng: {'K1_XGB_MAE_thap_hon_B2': 13, 'K2_XGBrisk_F1_cao_hon_B1_va_B2': 13, 'K3_ECE_duoi_0.03': 13, 'K4_lop_xac_suat_khong_hon_nhieu': 12, 'K5_cov80_trong_0.75_0.85': 13} / 13
+
+Đã lưu results/final/fig8_sensitivity.png, sensitivity_table.csv, sensitivity_conclusions.csv
+>> python .\cashflow_risks\make_demo.py --out demo.html
+đã huấn luyện hệ thống: tau = 0.30, biên B1 = +0.75, B2 = +0.25
+đã ghi demo.html: 20 người, 80 chu kỳ, 909 KB
+>> python .\cashflow_risks\check_extras.py 
+-- 1. Simulator: tham so mac dinh khong doi --
+PASS  PARAMS mac dinh toan 1.0  [{'weekend': 1.0, 'front': 1.0, 'noise': 1.0, 'spike': 1.0, 'shock': 1.0}]
+PASS  simulate mac dinh (20 nguoi, seed 42) giong het data/sample_v0.csv
+PASS  doi tham so (weekend x1.5) thi du lieu khac, va PARAMS tu khoi phuc
+
+-- 2. Phan tich do nhay --
+PASS  du 13 kich ban  [13 kich ban]
+PASS  K1: XGB co MAE chi tieu thap hon B2 o moi kich ban, giam it nhat 10%  [giam 13.6% den 21.0%]
+PASS  K2: F1 cua XGB + p cao hon ca B1 va B2 o it nhat 11/13 kich ban  [13/13, hon B2 +0.010 den +0.032]
+PASS  K3: ECE cua p duoi 0,04 o moi kich ban va trung binh duoi 0,02  [ECE 0.008 den 0.017, TB 0.010]
+PASS  K5: do phu khoang 80% trong [0,74; 0,86] o moi kich ban  [0.791 den 0.798]
+PASS  K4 (thong tin): lop xac suat khong doi F1 nhieu o it nhat 9/13 kich ban  [12/13]
+PASS  ti le thieu tien tren test nam trong [0,2; 0,4] o cac kich ban khong doi ti le chi/thu nhap  [0.270 den 0.295]
+PASS  rho_lo < base < rho_hi ve ti le thieu tien (kich ban doi ti le chi/thu nhap lam dung huong)  [0.168 < 0.279 < 0.411]
+PASS  co file results/final/fig8_sensitivity.png
+PASS  co file results/final/sensitivity_table.csv
+PASS  co file results/final/sensitivity_conclusions.csv
+
+-- 3. MVP demo.html --
+PASS  khong con placeholder __DATA__
+PASS  tim thay du lieu nhung trong trang
+PASS  co it nhat 1 nguoi va 1 chu ky  [20 nguoi, 80 chu ky]
+PASS  nguong tau trong (0,05; 0,70)  [0.3]
+PASS  moi ngay du bao co p trong [0,1], canh bao khop tau, du bao du so ngay con lai  [2129 ngay du bao, 0 loi]
+PASS  trang ghi ro la du lieu mo phong / minh hoa
+PASS  kich thuoc trang duoi 3 MB  [909 KB]
+
+TAT CA DAT
+OK  : tải trang không có lỗi script 
+OK  : danh sách người dùng: 20
+OK  : danh sách chu kỳ của người đầu
+OK  : dải rủi ro có đủ 30 ô
+OK  : luồng có 4 bước
+OK  : biểu đồ có đường vẽ
+OK  : có câu kết luận: Có nguy cơ: khả năng thiếu tiền trước kỳ nhận là 42%.
+OK  : duyệt 2440 ngày-chu kỳ: không NaN/undefined, kết luận khớp dữ liệu
+OK  : bấm ô ngày 5 chuyển sang ngày 5
+OK  : phím → sang ngày 6
+OK  : phím ← về ngày 5
+OK  : bật "kết quả thật" thêm một đường thực tế
+OK  : bảng thêm dòng "Thực tế"
+OK  : giới hạn ngày tối thiểu = 1
+OK  : giới hạn ngày tối đa = độ dài chu kỳ
+OK  : mọi ô có aria-label
+OK  : không phát sinh lỗi script khi tương tác 
+TẤT CẢ OK
+HOAN TAT sau 16.2 phut. Mo demo.html bang trinh duyet; bang va hinh do nhay nam trong results\final\.

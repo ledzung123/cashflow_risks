@@ -1,0 +1,1037 @@
+﻿Requirement already satisfied: numpy==2.4.5 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from -r requirements.txt (line 3)) (2.4.5)
+Requirement already satisfied: pandas==3.0.6 in c:\users\tientuong\appdata\roaming\python\python312\site-packages (from -r requirements.txt (line 4)) (3.0.6)
+Requirement already satisfied: scipy==1.17.1 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from -r requirements.txt (line 5)) (1.17.1)
+Requirement already satisfied: scikit-learn==1.9.1 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from -r requirements.txt (line 6)) (1.9.1)
+Requirement already satisfied: xgboost==3.4.1 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from -r requirements.txt (line 7)) (3.4.1)
+Requirement already satisfied: matplotlib==3.10.9 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from -r requirements.txt (line 8)) (3.10.9)
+Requirement already satisfied: tabulate==0.10.0 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from -r requirements.txt (line 9)) (0.10.0)
+Requirement already satisfied: python-dateutil>=2.8.2 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from pandas==3.0.6->-r requirements.txt (line 4)) (2.9.0.post0)
+Requirement already satisfied: tzdata in c:\users\tientuong\appdata\roaming\python\python312\site-packages (from pandas==3.0.6->-r requirements.txt (line 4)) (2026.4)
+Requirement already satisfied: joblib>=1.4.0 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from scikit-learn==1.9.1->-r requirements.txt (line 6)) (1.6.0)
+Requirement already satisfied: narwhals>=2.0.1 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from scikit-learn==1.9.1->-r requirements.txt (line 6)) (2.27.1)
+Requirement already satisfied: threadpoolctl>=3.5.0 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from scikit-learn==1.9.1->-r requirements.txt (line 6)) (3.7.0)
+Requirement already satisfied: contourpy>=1.0.1 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (1.3.3)
+Requirement already satisfied: cycler>=0.10 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (4.63.0)
+Requirement already satisfied: kiwisolver>=1.3.1 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (1.5.0)
+Requirement already satisfied: packaging>=20.0 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (26.1)
+Requirement already satisfied: pillow>=8 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (12.2.0)
+Requirement already satisfied: pyparsing>=3 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from matplotlib==3.10.9->-r requirements.txt (line 8)) (3.3.2)
+Requirement already satisfied: cloudpickle>=3.0 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from joblib>=1.4.0->scikit-learn==1.9.1->-r requirements.txt (line 6)) (3.1.2)
+Requirement already satisfied: six>=1.5 in c:\users\tientuong\appdata\local\programs\python\python312\lib\site-packages (from python-dateutil>=2.8.2->pandas==3.0.6->-r requirements.txt (line 4)) (1.17.0)
+powershell : 
+At line:1 char:361
++ ... flow_risk"; powershell -NoProfile -ExecutionPolicy Bypass -File .\run ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[notice] A new release of pip is available: 25.0.1 -> 26.2.2
+[notice] To update, run: python.exe -m pip install --upgrade pip
+Da doi ten results cu thanh results_cu_20261022_2344
+>> python .\cashflow_risks\check_conventions.py 
+-- 1. File can co --
+PASS  du 27 file .py
+PASS  co demo_template.html canh make_demo.py
+
+-- 2. Quy uoc du lieu: 300 nguoi x 24 chu ky, 4 tap --
+PASS  N_CYCLES = 24  [24]
+PASS  chia tap theo chu ky: train 0-11, calib 12-15, val 16-19, test 20-23
+PASS  tham so simulator mac dinh (PARAMS) toan 1.0
+PASS  simulate.py: --users mac dinh = 300
+PASS  run_baselines.py (load dung chung cho run_xgb, run_risk, check_residuals) sinh 300 nguoi
+PASS  make_demo.py: --users mac dinh = 300
+PASS  sensitivity.py: --users mac dinh = 300
+PASS  sensitivity.py dung rho 0,85-1,05 va carry 0,10
+PASS  make_demo.py dung rho 0,85-1,05 va carry 0,10
+
+-- 3. Seed: seed cuoi la 1, 2, 3 --
+PASS  run_baselines.py: --seed mac dinh = 1  [1.0]
+PASS  run_xgb.py: --seed mac dinh = 1  [1.0]
+PASS  run_risk.py: --seed mac dinh = 1  [1.0]
+PASS  check_residuals.py: --seed mac dinh = 1  [1.0]
+PASS  sensitivity.py: --seed mac dinh = 1  [1.0]
+PASS  make_demo.py: --seed mac dinh = 1  [1.0]
+PASS  run_all.ps1 chay seed 1..3
+
+-- 4. Hang so cua bai toan --
+PASS  theta = trung binh 14 ngay truoc ngay nhan tien
+PASS  chi xet diem con >= 3 ngay den ky nhan tien
+PASS  B1 = trung binh 14 ngay, B2 = trung binh cung thu trong 28 ngay
+PASS  lich su ca nhan dung toi da 6 chu ky truoc
+PASS  horizon toi da 31 ngay
+PASS  nhom 'chi cuc lon' dung nguong 0,5 ngay / 28 ngay
+
+-- 5. Khong dung cot nhan that `pattern` lam dac trung --
+PASS  pattern khong nam trong FEATURES
+PASS  features.py: ma (bo comment) khong tham chieu cot pattern
+PASS  model_xgb.py: ma (bo comment) khong tham chieu cot pattern
+PASS  risk.py: ma (bo comment) khong tham chieu cot pattern
+
+-- 6. Du lieu mau sinh ra dung dinh dang --
+PASS  cot dung SPEC (11 cot, dung thu tu)
+PASS  12 nguoi x 24 chu ky
+PASS  D = do dai chu ky - day_in_cycle (D la so ngay CON LAI)
+PASS  moi chu ky co dung 1 ngay nhan tien, vao ngay dau chu ky
+PASS  4 kieu chi tieu chia deu (12 nguoi -> moi kieu 3 nguoi)
+PASS  trong chu ky, so du chi giam sau ngay dau
+
+TAT CA DAT
+>> python .\cashflow_risks\simulate.py --users 300 --seed 42 --out data\daily.csv
+Đã ghi data\daily.csv (219,000 dòng) và data\daily_users.csv
+>> python .\cashflow_risks\plot_sanity.py --csv data\daily.csv --out results\final\fig0_sanity_du_lieu.png
+Tỉ lệ chu kỳ thiếu tiền: tổng 29.0% | train 28.8% | val 28.2% | test 31.8%
+Theo kiểu: {'even': 0.285, 'front': 0.248, 'spike': 0.323, 'weekend': 0.304}
+Chi tiêu ngày trung vị (VND): {'allowance_1st': 96000, 'salary_25': 267000}
+Đã lưu results\final\fig0_sanity_du_lieu.png
+>> python .\cashflow_risks\test_pipeline.py 
+dp nhỏ: 4,963 điểm
+OK nhãn
+OK oracle: P = R = 1
+OK không rò rỉ (B1, B2)
+OK chỉ số (ví dụ tay)
+OK điểm số liên tục khớp quy tắc biên m; AUROC/AUPRC
+OK báo sớm ở cùng mức báo nhầm (ví dụ tính tay)
+OK KS và báo sớm ở cùng Precision (ví dụ tính tay)
+OK nhập CSV thật: phát hiện ô hỏng, chi âm, ngày thiếu, ngoại lai (chỉ cảnh báo)
+TẤT CẢ OK
+>> python .\cashflow_risks\test_xgb.py 
+đã huấn luyện mô hình nhỏ (40 cây) trên 3,942 điểm
+OK hình dạng dự báo (>= 0, NaN sau D)
+OK không rò rỉ tương lai (XGBoost)
+OK không dùng cột pattern
+TẤT CẢ OK
+>> python .\cashflow_risks\test_risk.py 
+OK p trong [0, 1] (cum, mc)
+OK đơn điệu theo số dư
+OK oracle: p khớp nhãn y
+OK không rò rỉ tương lai
+OK bốn tập (train/calib/val/test) tách rời và theo thứ tự thời gian
+OK persist, Brier, ECE
+OK chỉ số p_t, độ phủ khoảng dự báo, nhóm big28
+TẤT CẢ OK
+>> python .\cashflow_risks\run_baselines.py --seed 1
+dp: 185,161 điểm quyết định | dương: 27.9% | train/val/test = 88,466/32,512/32,290
+
+=== B1 (m tune trên val = +0.75 x theta, F1 val = 0.661) -> TEST ===
+{'precision': 0.553, 'recall': 0.774, 'f1': 0.645, 'n_points': 32290, 'pos_rate_points': 0.279, 'cycle_recall': 0.992, 'cycle_false_alarm': 0.617, 'mean_days_early': 22.934, 'n_pos_cycles': 353, 'n_neg_cycles': 847, 'MAE_spend': 128734.023, 'RMSE_spend': 247042.033, 'MAE_balance': 959244.096, 'RMSE_balance': 1655643.54}
+         precision  recall     f1  mean_days_early  cycle_false_alarm   MAE_spend  MAE_balance
+pattern                                                                                       
+even         0.636   0.811  0.713           24.116              0.551  101089.740   621146.972
+front        0.422   0.929  0.581           24.959              0.797  110543.243  1065360.660
+spike        0.595   0.622  0.608           19.289              0.525  159778.475  1438778.623
+weekend      0.618   0.772  0.686           24.043              0.578  143907.172   723937.662
+
+=== B2 (m tune trên val = +0.25 x theta, F1 val = 0.688) -> TEST ===
+{'precision': 0.594, 'recall': 0.764, 'f1': 0.668, 'n_points': 32290, 'pos_rate_points': 0.279, 'cycle_recall': 0.983, 'cycle_false_alarm': 0.447, 'mean_days_early': 22.395, 'n_pos_cycles': 353, 'n_neg_cycles': 847, 'MAE_spend': 126609.235, 'RMSE_spend': 251442.713, 'MAE_balance': 821015.361, 'RMSE_balance': 1385602.642}
+         precision  recall     f1  mean_days_early  cycle_false_alarm   MAE_spend  MAE_balance
+pattern                                                                                       
+even         0.689   0.775  0.729           23.202              0.364  111547.971   578213.226
+front        0.479   0.914  0.628           24.685              0.564  113346.168   780130.508
+spike        0.587   0.616  0.601           19.062              0.450  177623.083  1280783.756
+weekend      0.661   0.784  0.717           23.344              0.403  104559.892   656669.108
+
+Đã lưu results/baselines_seed1.csv
+>> python .\cashflow_risks\run_xgb.py --seed 1
+điểm quyết định train/val/test = 88,466/32,512/32,290 | số cây (early stopping) = 120 | thời gian huấn luyện = 13s
+
+=== TEST (m của từng mô hình tune trên val) ===
+       precision  recall     f1  cycle_false_alarm   MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                
+XGB        0.637   0.739  0.684              0.388  106474.156  225568.466   631435.695   1087593.394
+B1         0.553   0.774  0.645              0.617  128734.023  247042.033   959244.096   1655643.540
+B2         0.594   0.764  0.668              0.447  126609.235  251442.713   821015.361   1385602.642
+  XGB so với B2, MAE_spend: -15.9%
+  XGB so với B2, MAE_balance: -23.1%
+  XGB so với B2, RMSE_balance: -21.5%
+
+=== Theo 4 kiểu chi tiêu: XGB so với B2 (F1 | MAE_balance) ===
+         F1_XGB  F1_B2  F1_B1   MAEbal_XGB    MAEbal_B2    MAEbal_B1
+pattern                                                             
+even      0.733  0.729  0.713   493547.424   578213.226   621146.972
+front     0.705  0.628  0.581   450652.245   780130.508  1065360.660
+spike     0.581  0.601  0.608  1060564.264  1280783.756  1438778.623
+weekend   0.711  0.717  0.686   531925.319   656669.108   723937.662
+
+=== Độ quan trọng đặc trưng (gain), top 8 ===
+  tgt_weekend         27.0%
+  we_ratio            16.1%
+  tgt_wd              11.1%
+  b2_rel               9.8%
+  bal_rel              6.0%
+  hist_smooth_rel      4.2%
+  big28                3.2%
+  h                    2.5%
+
+Đã lưu results/xgb_seed1.csv (+ importance, by_pattern, baselines_samedata)
+>> python .\cashflow_risks\run_risk.py --seed 1
+tổng thời gian 85s | phương pháp được chọn theo Brier val: cumb
+
+=== Ba cách ước lượng p (Brier/ECE thấp hơn = hiệu chỉnh tốt hơn; cov80 danh nghĩa = 0,80) ===
+         model  p_star  f1_val  brier_val  ece_val  brier_test  ece_test    f1  cov80  cov80_spike  secs
+ XGB+risk[cum]    0.33   0.723      0.119    0.021       0.118     0.010 0.689  0.790        0.593   3.0
+XGB+risk[cumb]    0.30   0.722      0.118    0.020       0.117     0.008 0.688  0.797        0.701   5.1
+  XGB+risk[mc]    0.35   0.710      0.123    0.016       0.121     0.033 0.688    NaN          NaN  19.7
+
+=== TEST ===
+        model    m  precision  recall    f1  cycle_recall  cycle_false_alarm  p_star  brier_test  ece_test
+          XGB 1.00      0.637   0.739 0.684         0.983              0.388     NaN         NaN       NaN
+           B1 0.75      0.553   0.774 0.645         0.992              0.617     NaN         NaN       NaN
+           B2 0.25      0.594   0.764 0.668         0.983              0.447     NaN         NaN       NaN
+     XGB+risk  NaN      0.632   0.754 0.688         0.983              0.434    0.30       0.117     0.008
+XGB+risk(k=2)  NaN      0.638   0.712 0.673         0.966              0.391    0.28       0.117     0.008
+      B2+risk  NaN      0.595   0.762 0.668         0.983              0.463    0.38       0.136     0.069
+
+=== XGB+risk theo 4 kiểu chi tiêu ===
+         precision  recall     f1  cycle_false_alarm
+pattern                                             
+even         0.700   0.783  0.739              0.346
+front        0.610   0.840  0.706              0.392
+spike        0.591   0.597  0.594              0.480
+weekend      0.628   0.818  0.711              0.529
+
+=== Chỉ số cho p_t (test) ===
+   model  pos_rate  brier  brier_skill  log_loss  log_loss_skill  auroc  auprc  cal_slope  cal_intercept   ece   mce  sharpness  cov50  cov80  cov90
+XGB+risk     0.279  0.117        0.420     0.375           0.368  0.879  0.784      0.898         -0.050 0.008 0.051      0.298  0.504  0.797  0.891
+ B2+risk     0.279  0.136        0.327     0.436           0.264  0.854  0.743      0.678         -0.579 0.069 0.188      0.331  0.487  0.792  0.895
+
+=== Chỉ số p_t theo kiểu chi tiêu (XGB+risk, test) ===
+         pos_rate  brier  auroc    ece  cal_slope  cov80
+pattern                                                 
+even        0.276  0.101  0.910  0.021      1.169  0.835
+front       0.232  0.091  0.927  0.031      1.178  0.827
+spike       0.305  0.160  0.787  0.065      0.509  0.701
+weekend     0.303  0.117  0.896  0.012      1.054  0.823
+
+=== Báo sớm ở cùng mức báo nhầm 20% (test) ===
+   model  far_actual  cycle_recall  lead_mean_all  lead_median_caught
+      B1       0.201         0.725         13.788                20.0
+      B2       0.201         0.799         15.703                21.0
+     XGB       0.201         0.929         17.453                21.0
+XGB+risk       0.201         0.949         17.292                20.0
+ B2+risk       0.201         0.921         16.218                20.0
+
+=== AUROC / AUPRC (điểm số liên tục, không phụ thuộc ngưỡng; test) ===
+   model  auroc  auprc    ks  pos_rate
+      B1  0.816  0.635 0.536     0.279
+      B2  0.837  0.689 0.562     0.279
+     XGB  0.862  0.757 0.577     0.279
+XGB+risk  0.879  0.784 0.589     0.279
+ B2+risk  0.854  0.743 0.562     0.279
+
+Đã lưu results/risk_seed1.csv, risk_methods_seed1.csv, calibration_seed1.png
+>> python .\cashflow_risks\check_residuals.py --seed 1
+            metric  value
+  lagcorr_k1_calib -0.003
+  lagcorr_k2_calib  0.010
+  lagcorr_k3_calib  0.016
+  lagcorr_k7_calib  0.015
+       VR_D5_calib  1.152
+      VR_D10_calib  1.144
+      VR_D15_calib  1.090
+      VR_D20_calib  1.114
+      VR_D25_calib  1.287
+   lagcorr_k1_test  0.013
+   lagcorr_k2_test  0.014
+   lagcorr_k3_test  0.021
+   lagcorr_k7_test  0.044
+        VR_D5_test  0.926
+       VR_D10_test  1.136
+       VR_D15_test  1.382
+       VR_D20_test  1.282
+       VR_D25_test  1.308
+      cov80_mc_all  0.755
+     cov80_mc_even  0.786
+    cov80_mc_front  0.825
+  cov80_mc_weekend  0.835
+    cov80_mc_spike  0.570
+     cov80_cum_all  0.790
+    cov80_cum_even  0.859
+   cov80_cum_front  0.852
+ cov80_cum_weekend  0.853
+   cov80_cum_spike  0.593
+    cov80_cumb_all  0.797
+   cov80_cumb_even  0.835
+  cov80_cumb_front  0.827
+cov80_cumb_weekend  0.823
+  cov80_cumb_spike  0.701
+>> python .\cashflow_risks\extra_analysis.py --seed 1
+b1     xong: huấn luyện   0.0s, dự báo test  0.0s (1 ms/1000 điểm)
+b2     xong: huấn luyện   0.0s, dự báo test  0.1s (2 ms/1000 điểm)
+ridge  xong: huấn luyện   5.0s, dự báo test  1.0s (32 ms/1000 điểm)
+hgb    xong: huấn luyện   9.1s, dự báo test  2.1s (66 ms/1000 điểm)
+rf     xong: huấn luyện  10.0s, dự báo test  1.0s (32 ms/1000 điểm)
+xgb    xong: huấn luyện  13.5s, dự báo test  0.9s (28 ms/1000 điểm)
+độ trễ 1 yêu cầu (trung vị): 13.8 ms | mô hình 1028 KB
+                       MAE_spend     f1  auroc  recall_at_far20  fit_seconds  pred_ms_per_1k
+model                                                                                       
+B1                    128734.023  0.645  0.816            0.725        0.000           1.379
+B2                    126609.235  0.668  0.837            0.799        0.000           1.563
+Ridge (tuyến tính)    112825.098  0.680  0.859            0.932        4.982          32.344
+HistGradientBoosting  106527.348  0.686  0.862            0.935        9.060          65.512
+Random Forest         106785.007  0.685  0.861            0.909       10.005          31.801
+XGBoost               106474.156  0.684  0.862            0.929       13.528          27.794
+đã lưu models, cost, boot, fair, latency cho seed 1
+>> python .\cashflow_risks\run_baselines.py --seed 2
+dp: 185,070 điểm quyết định | dương: 26.6% | train/val/test = 88,532/32,577/32,208
+
+=== B1 (m tune trên val = -0.25 x theta, F1 val = 0.651) -> TEST ===
+{'precision': 0.634, 'recall': 0.727, 'f1': 0.677, 'n_points': 32208, 'pos_rate_points': 0.285, 'cycle_recall': 0.989, 'cycle_false_alarm': 0.512, 'mean_days_early': 22.615, 'n_pos_cycles': 362, 'n_neg_cycles': 838, 'MAE_spend': 134223.355, 'RMSE_spend': 254298.645, 'MAE_balance': 983821.355, 'RMSE_balance': 1640398.239}
+         precision  recall     f1  mean_days_early  cycle_false_alarm   MAE_spend  MAE_balance
+pattern                                                                                       
+even         0.776   0.715  0.744           23.988              0.342   98537.282   597194.992
+front        0.565   0.903  0.695           24.040              0.716  115304.511  1131448.016
+spike        0.639   0.589  0.613           19.545              0.545  171275.821  1471082.811
+weekend      0.627   0.702  0.662           23.870              0.468  152150.445   755460.483
+
+=== B2 (m tune trên val = -1.00 x theta, F1 val = 0.666) -> TEST ===
+{'precision': 0.702, 'recall': 0.69, 'f1': 0.696, 'n_points': 32208, 'pos_rate_points': 0.285, 'cycle_recall': 0.948, 'cycle_false_alarm': 0.333, 'mean_days_early': 21.767, 'n_pos_cycles': 362, 'n_neg_cycles': 838, 'MAE_spend': 130571.54, 'RMSE_spend': 256511.046, 'MAE_balance': 826202.38, 'RMSE_balance': 1330275.484}
+         precision  recall     f1  mean_days_early  cycle_false_alarm   MAE_spend  MAE_balance
+pattern                                                                                       
+even         0.869   0.642  0.739           22.026              0.151  107490.845   548556.351
+front        0.641   0.904  0.750           24.040              0.498  114494.492   812332.014
+spike        0.674   0.569  0.617           18.902              0.422  189326.010  1292434.472
+weekend      0.711   0.633  0.669           22.485              0.290  111717.102   667983.987
+
+Đã lưu results/baselines_seed2.csv
+>> python .\cashflow_risks\run_xgb.py --seed 2
+điểm quyết định train/val/test = 88,532/32,577/32,208 | số cây (early stopping) = 100 | thời gian huấn luyện = 12s
+
+=== TEST (m của từng mô hình tune trên val) ===
+       precision  recall     f1  cycle_false_alarm   MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                
+XGB        0.712   0.718  0.715              0.358  110986.845  231013.558   629561.501   1030615.615
+B1         0.634   0.727  0.677              0.512  134223.355  254298.645   983821.355   1640398.239
+B2         0.702   0.690  0.696              0.333  130571.540  256511.046   826202.380   1330275.484
+  XGB so với B2, MAE_spend: -15.0%
+  XGB so với B2, MAE_balance: -23.8%
+  XGB so với B2, RMSE_balance: -22.5%
+
+=== Theo 4 kiểu chi tiêu: XGB so với B2 (F1 | MAE_balance) ===
+         F1_XGB  F1_B2  F1_B1   MAEbal_XGB    MAEbal_B2    MAEbal_B1
+pattern                                                             
+even      0.768  0.739  0.744   487456.741   548556.351   597194.992
+front     0.786  0.750  0.695   453847.522   812332.014  1131448.016
+spike     0.623  0.617  0.613  1044235.315  1292434.472  1471082.811
+weekend   0.684  0.669  0.662   544736.652   667983.987   755460.483
+
+=== Độ quan trọng đặc trưng (gain), top 8 ===
+  we_ratio            19.3%
+  tgt_weekend         18.9%
+  tgt_wd              13.5%
+  b2_rel              10.9%
+  bal_rel              6.2%
+  hist_smooth_rel      4.2%
+  dic_t                3.2%
+  std14_rel            2.7%
+
+Đã lưu results/xgb_seed2.csv (+ importance, by_pattern, baselines_samedata)
+>> python .\cashflow_risks\run_risk.py --seed 2
+tổng thời gian 150s | phương pháp được chọn theo Brier val: cumb
+
+=== Ba cách ước lượng p (Brier/ECE thấp hơn = hiệu chỉnh tốt hơn; cov80 danh nghĩa = 0,80) ===
+         model  p_star  f1_val  brier_val  ece_val  brier_test  ece_test    f1  cov80  cov80_spike  secs
+ XGB+risk[cum]    0.34   0.697      0.117    0.020       0.111     0.018 0.719  0.809        0.629   3.0
+XGB+risk[cumb]    0.34   0.698      0.114    0.022       0.110     0.020 0.718  0.797        0.718   5.7
+  XGB+risk[mc]    0.35   0.696      0.120    0.017       0.115     0.017 0.706    NaN          NaN  25.4
+
+=== TEST ===
+        model     m  precision  recall    f1  cycle_recall  cycle_false_alarm  p_star  brier_test  ece_test
+          XGB  0.75      0.712   0.718 0.715         0.967              0.358     NaN         NaN       NaN
+           B1 -0.25      0.634   0.727 0.677         0.989              0.512     NaN         NaN       NaN
+           B2 -1.00      0.702   0.690 0.696         0.948              0.333     NaN         NaN       NaN
+     XGB+risk   NaN      0.715   0.720 0.718         0.970              0.384    0.34       0.110      0.02
+XGB+risk(k=2)   NaN      0.700   0.706 0.703         0.967              0.389    0.29       0.110      0.02
+      B2+risk   NaN      0.690   0.714 0.702         0.959              0.362    0.46       0.122      0.05
+
+=== XGB+risk theo 4 kiểu chi tiêu ===
+         precision  recall     f1  cycle_false_alarm
+pattern                                             
+even         0.846   0.698  0.765              0.219
+front        0.736   0.864  0.794              0.398
+spike        0.674   0.582  0.625              0.487
+weekend      0.628   0.755  0.686              0.446
+
+=== Chỉ số cho p_t (test) ===
+   model  pos_rate  brier  brier_skill  log_loss  log_loss_skill  auroc  auprc  cal_slope  cal_intercept  ece   mce  sharpness  cov50  cov80  cov90
+XGB+risk     0.285  0.110        0.465     0.356           0.411  0.892  0.816      0.989          0.175 0.02 0.077      0.298  0.508  0.797  0.901
+ B2+risk     0.285  0.122        0.410     0.395           0.345  0.875  0.788      0.746         -0.449 0.05 0.149      0.332  0.499  0.805  0.908
+
+=== Chỉ số p_t theo kiểu chi tiêu (XGB+risk, test) ===
+         pos_rate  brier  auroc    ece  cal_slope  cov80
+pattern                                                 
+even        0.261  0.092  0.938  0.054      1.496  0.816
+front       0.312  0.086  0.946  0.039      1.474  0.837
+spike       0.346  0.171  0.788  0.075      0.515  0.718
+weekend     0.223  0.095  0.908  0.031      1.152  0.815
+
+=== Báo sớm ở cùng mức báo nhầm 20% (test) ===
+   model  far_actual  cycle_recall  lead_mean_all  lead_median_caught
+      B1         0.2         0.771         15.207                21.0
+      B2         0.2         0.851         17.613                22.0
+     XGB         0.2         0.934         18.262                21.0
+XGB+risk         0.2         0.942         18.293                21.0
+ B2+risk         0.2         0.917         18.144                22.0
+
+=== AUROC / AUPRC (điểm số liên tục, không phụ thuộc ngưỡng; test) ===
+   model  auroc  auprc    ks  pos_rate
+      B1  0.838  0.688 0.565     0.285
+      B2  0.860  0.742 0.595     0.285
+     XGB  0.882  0.794 0.613     0.285
+XGB+risk  0.892  0.816 0.620     0.285
+ B2+risk  0.875  0.788 0.593     0.285
+
+Đã lưu results/risk_seed2.csv, risk_methods_seed2.csv, calibration_seed2.png
+>> python .\cashflow_risks\check_residuals.py --seed 2
+            metric  value
+  lagcorr_k1_calib  0.013
+  lagcorr_k2_calib  0.003
+  lagcorr_k3_calib  0.004
+  lagcorr_k7_calib  0.008
+       VR_D5_calib  0.946
+      VR_D10_calib  1.041
+      VR_D15_calib  1.284
+      VR_D20_calib  1.128
+      VR_D25_calib  1.067
+   lagcorr_k1_test  0.027
+   lagcorr_k2_test  0.003
+   lagcorr_k3_test  0.014
+   lagcorr_k7_test  0.010
+        VR_D5_test  1.069
+       VR_D10_test  1.104
+       VR_D15_test  1.030
+       VR_D20_test  1.155
+       VR_D25_test  1.273
+      cov80_mc_all  0.753
+     cov80_mc_even  0.753
+    cov80_mc_front  0.831
+  cov80_mc_weekend  0.837
+    cov80_mc_spike  0.586
+     cov80_cum_all  0.809
+    cov80_cum_even  0.854
+   cov80_cum_front  0.872
+ cov80_cum_weekend  0.874
+   cov80_cum_spike  0.629
+    cov80_cumb_all  0.797
+   cov80_cumb_even  0.816
+  cov80_cumb_front  0.837
+cov80_cumb_weekend  0.815
+  cov80_cumb_spike  0.718
+>> python .\cashflow_risks\extra_analysis.py --seed 2
+b1     xong: huấn luyện   0.0s, dự báo test  0.0s (1 ms/1000 điểm)
+b2     xong: huấn luyện   0.0s, dự báo test  0.0s (1 ms/1000 điểm)
+ridge  xong: huấn luyện   4.6s, dự báo test  0.9s (27 ms/1000 điểm)
+hgb    xong: huấn luyện   7.3s, dự báo test  1.8s (55 ms/1000 điểm)
+rf     xong: huấn luyện   9.2s, dự báo test  1.0s (31 ms/1000 điểm)
+xgb    xong: huấn luyện  11.6s, dự báo test  0.9s (28 ms/1000 điểm)
+độ trễ 1 yêu cầu (trung vị): 14.0 ms | mô hình 938 KB
+                       MAE_spend     f1  auroc  recall_at_far20  fit_seconds  pred_ms_per_1k
+model                                                                                       
+B1                    134223.355  0.677  0.838            0.771        0.000           1.238
+B2                    130571.540  0.696  0.860            0.851        0.000           1.459
+Ridge (tuyến tính)    117396.128  0.705  0.876            0.925        4.605          27.254
+HistGradientBoosting  111058.446  0.715  0.882            0.934        7.284          54.610
+Random Forest         111239.894  0.719  0.883            0.906        9.230          31.318
+XGBoost               110986.845  0.715  0.882            0.934       11.613          27.688
+đã lưu models, cost, boot, fair, latency cho seed 2
+>> python .\cashflow_risks\run_baselines.py --seed 3
+dp: 184,851 điểm quyết định | dương: 28.1% | train/val/test = 88,409/32,458/32,283
+
+=== B1 (m tune trên val = +0.00 x theta, F1 val = 0.659) -> TEST ===
+{'precision': 0.576, 'recall': 0.737, 'f1': 0.646, 'n_points': 32283, 'pos_rate_points': 0.275, 'cycle_recall': 0.989, 'cycle_false_alarm': 0.58, 'mean_days_early': 22.474, 'n_pos_cycles': 348, 'n_neg_cycles': 852, 'MAE_spend': 130241.211, 'RMSE_spend': 253145.276, 'MAE_balance': 965491.393, 'RMSE_balance': 1562155.06}
+         precision  recall     f1  mean_days_early  cycle_false_alarm   MAE_spend  MAE_balance
+pattern                                                                                       
+even         0.679   0.778  0.725           23.462              0.455   95664.639   597204.135
+front        0.462   0.886  0.607           23.977              0.832  106237.527  1052676.885
+spike        0.577   0.607  0.592           19.695              0.562  169541.620  1505575.583
+weekend      0.677   0.689  0.683           23.153              0.474  149931.408   722629.239
+
+=== B2 (m tune trên val = -0.25 x theta, F1 val = 0.678) -> TEST ===
+{'precision': 0.622, 'recall': 0.733, 'f1': 0.673, 'n_points': 32283, 'pos_rate_points': 0.275, 'cycle_recall': 0.971, 'cycle_false_alarm': 0.41, 'mean_days_early': 22.151, 'n_pos_cycles': 348, 'n_neg_cycles': 852, 'MAE_spend': 127892.052, 'RMSE_spend': 257236.65, 'MAE_balance': 793287.071, 'RMSE_balance': 1237228.376}
+         precision  recall     f1  mean_days_early  cycle_false_alarm   MAE_spend  MAE_balance
+pattern                                                                                       
+even         0.736   0.746  0.741           22.870              0.270  104325.401   537987.882
+front        0.526   0.905  0.665           24.372              0.570  106969.894   753069.561
+spike        0.594   0.598  0.596           18.892              0.493  190180.563  1284011.759
+weekend      0.708   0.691  0.699           22.841              0.315  110752.933   611928.888
+
+Đã lưu results/baselines_seed3.csv
+>> python .\cashflow_risks\run_xgb.py --seed 3
+điểm quyết định train/val/test = 88,409/32,458/32,283 | số cây (early stopping) = 128 | thời gian huấn luyện = 14s
+
+=== TEST (m của từng mô hình tune trên val) ===
+       precision  recall     f1  cycle_false_alarm   MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                
+XGB        0.659   0.734  0.694              0.406  108151.448  231988.308   610683.609    978478.510
+B1         0.576   0.737  0.646              0.580  130241.211  253145.276   965491.393   1562155.060
+B2         0.622   0.733  0.673              0.410  127892.052  257236.650   793287.071   1237228.376
+  XGB so với B2, MAE_spend: -15.4%
+  XGB so với B2, MAE_balance: -23.0%
+  XGB so với B2, RMSE_balance: -20.9%
+
+=== Theo 4 kiểu chi tiêu: XGB so với B2 (F1 | MAE_balance) ===
+         F1_XGB  F1_B2  F1_B1   MAEbal_XGB    MAEbal_B2    MAEbal_B1
+pattern                                                             
+even      0.732  0.741  0.725   486536.672   537987.882   597204.135
+front     0.744  0.665  0.607   412465.523   753069.561  1052676.885
+spike     0.591  0.596  0.592  1039382.695  1284011.759  1505575.583
+weekend   0.709  0.699  0.683   515376.496   611928.888   722629.239
+
+=== Độ quan trọng đặc trưng (gain), top 8 ===
+  tgt_weekend         42.3%
+  we_ratio            10.9%
+  b2_rel               9.4%
+  tgt_wd               7.4%
+  bal_rel              5.1%
+  hist_smooth_rel      3.2%
+  dic_t                2.3%
+  D                    2.1%
+
+Đã lưu results/xgb_seed3.csv (+ importance, by_pattern, baselines_samedata)
+>> python .\cashflow_risks\run_risk.py --seed 3
+tổng thời gian 135s | phương pháp được chọn theo Brier val: cumb
+
+=== Ba cách ước lượng p (Brier/ECE thấp hơn = hiệu chỉnh tốt hơn; cov80 danh nghĩa = 0,80) ===
+         model  p_star  f1_val  brier_val  ece_val  brier_test  ece_test    f1  cov80  cov80_spike  secs
+ XGB+risk[cum]    0.31   0.711      0.119    0.011       0.111     0.009 0.696  0.797        0.583   3.2
+XGB+risk[cumb]    0.34   0.708      0.117    0.009       0.108     0.008 0.703  0.795        0.678   5.2
+  XGB+risk[mc]    0.42   0.704      0.125    0.032       0.115     0.031 0.701    NaN          NaN  35.6
+
+=== TEST ===
+        model     m  precision  recall    f1  cycle_recall  cycle_false_alarm  p_star  brier_test  ece_test
+          XGB  1.00      0.659   0.734 0.694         0.983              0.406     NaN         NaN       NaN
+           B1  0.00      0.576   0.737 0.646         0.989              0.580     NaN         NaN       NaN
+           B2 -0.25      0.622   0.733 0.673         0.971              0.410     NaN         NaN       NaN
+     XGB+risk   NaN      0.667   0.745 0.703         0.991              0.441    0.34       0.108     0.008
+XGB+risk(k=2)   NaN      0.660   0.712 0.685         0.986              0.426    0.30       0.108     0.008
+      B2+risk   NaN      0.626   0.729 0.674         0.971              0.423    0.44       0.131     0.068
+
+=== XGB+risk theo 4 kiểu chi tiêu ===
+         precision  recall     f1  cycle_false_alarm
+pattern                                             
+even         0.727   0.770  0.748              0.306
+front        0.706   0.818  0.758              0.364
+spike        0.570   0.645  0.605              0.660
+weekend      0.674   0.753  0.712              0.451
+
+=== Chỉ số cho p_t (test) ===
+   model  pos_rate  brier  brier_skill  log_loss  log_loss_skill  auroc  auprc  cal_slope  cal_intercept   ece   mce  sharpness  cov50  cov80  cov90
+XGB+risk     0.275  0.108        0.456     0.346           0.412  0.894  0.807      1.030           0.00 0.008 0.039      0.297  0.495  0.795  0.896
+ B2+risk     0.275  0.131        0.345     0.413           0.298  0.863  0.761      0.728          -0.58 0.068 0.226      0.328  0.489  0.796  0.893
+
+=== Chỉ số p_t theo kiểu chi tiêu (XGB+risk, test) ===
+         pos_rate  brier  auroc    ece  cal_slope  cov80
+pattern                                                 
+even        0.252  0.088  0.927  0.028      1.309  0.839
+front       0.273  0.088  0.935  0.029      1.255  0.833
+spike       0.295  0.147  0.818  0.045      0.653  0.678
+weekend     0.280  0.112  0.889  0.015      1.075  0.826
+
+=== Báo sớm ở cùng mức báo nhầm 20% (test) ===
+   model  far_actual  cycle_recall  lead_mean_all  lead_median_caught
+      B1       0.201         0.733         14.391                21.0
+      B2       0.201         0.830         16.365                21.0
+     XGB       0.201         0.940         17.989                21.0
+XGB+risk       0.201         0.948         17.707                20.0
+ B2+risk       0.200         0.920         16.658                20.0
+
+=== AUROC / AUPRC (điểm số liên tục, không phụ thuộc ngưỡng; test) ===
+   model  auroc  auprc    ks  pos_rate
+      B1  0.820  0.647 0.532     0.275
+      B2  0.845  0.718 0.569     0.275
+     XGB  0.873  0.781 0.592     0.275
+XGB+risk  0.894  0.807 0.607     0.275
+ B2+risk  0.863  0.761 0.570     0.275
+
+Đã lưu results/risk_seed3.csv, risk_methods_seed3.csv, calibration_seed3.png
+>> python .\cashflow_risks\check_residuals.py --seed 3
+            metric  value
+  lagcorr_k1_calib -0.005
+  lagcorr_k2_calib  0.002
+  lagcorr_k3_calib  0.003
+  lagcorr_k7_calib  0.014
+       VR_D5_calib  1.068
+      VR_D10_calib  1.068
+      VR_D15_calib  1.160
+      VR_D20_calib  1.114
+      VR_D25_calib  1.212
+   lagcorr_k1_test -0.008
+   lagcorr_k2_test  0.026
+   lagcorr_k3_test  0.004
+   lagcorr_k7_test  0.005
+        VR_D5_test  1.060
+       VR_D10_test  1.049
+       VR_D15_test  0.989
+       VR_D20_test  1.077
+       VR_D25_test  1.148
+      cov80_mc_all  0.748
+     cov80_mc_even  0.766
+    cov80_mc_front  0.829
+  cov80_mc_weekend  0.840
+    cov80_mc_spike  0.553
+     cov80_cum_all  0.797
+    cov80_cum_even  0.868
+   cov80_cum_front  0.863
+ cov80_cum_weekend  0.870
+   cov80_cum_spike  0.583
+    cov80_cumb_all  0.795
+   cov80_cumb_even  0.839
+  cov80_cumb_front  0.833
+cov80_cumb_weekend  0.826
+  cov80_cumb_spike  0.678
+>> python .\cashflow_risks\extra_analysis.py --seed 3
+b1     xong: huấn luyện   0.0s, dự báo test  0.0s (1 ms/1000 điểm)
+b2     xong: huấn luyện   0.0s, dự báo test  0.1s (2 ms/1000 điểm)
+ridge  xong: huấn luyện   3.0s, dự báo test  0.8s (26 ms/1000 điểm)
+hgb    xong: huấn luyện   6.8s, dự báo test  1.8s (56 ms/1000 điểm)
+rf     xong: huấn luyện   9.5s, dự báo test  1.0s (30 ms/1000 điểm)
+xgb    xong: huấn luyện  13.3s, dự báo test  1.0s (30 ms/1000 điểm)
+độ trễ 1 yêu cầu (trung vị): 13.8 ms | mô hình 1056 KB
+                       MAE_spend     f1  auroc  recall_at_far20  fit_seconds  pred_ms_per_1k
+model                                                                                       
+B1                    130241.211  0.646  0.820            0.733        0.000           1.275
+B2                    127892.052  0.673  0.845            0.830        0.000           1.641
+Ridge (tuyến tính)    114585.943  0.689  0.867            0.943        3.008          25.583
+HistGradientBoosting  108292.487  0.699  0.872            0.948        6.803          56.013
+Random Forest         108491.584  0.696  0.873            0.928        9.501          30.221
+XGBoost               108151.448  0.694  0.873            0.940       13.334          30.025
+đã lưu models, cost, boot, fair, latency cho seed 3
+>> python .\cashflow_risks\aggregate_results.py --prefix baselines --seeds 1 2 3
+TRUNG BÌNH:
+            m  precision  recall     f1  cycle_recall  cycle_false_alarm  mean_days_early   MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                                                      
+B1     0.167      0.588   0.746  0.656         0.990              0.570           22.674  131066.196  251495.318   969518.948   1619398.946
+B2    -0.333      0.639   0.729  0.679         0.967              0.397           22.104  128357.609  255063.470   813501.604   1317702.167 
+
+ĐỘ LỆCH CHUẨN:
+            m  precision  recall     f1  cycle_recall  cycle_false_alarm  mean_days_early  MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                                                     
+B1     0.520      0.042   0.025  0.018         0.002              0.053            0.236   2836.131    3899.535    12774.049     50157.270
+B2     0.629      0.056   0.037  0.015         0.018              0.058            0.317   2021.762    3156.586    17697.367     74981.977
+
+Đã lưu results/baselines_mean_seeds123.csv
+>> python .\cashflow_risks\aggregate_results.py --prefix xgb --seeds 1 2 3
+TRUNG BÌNH:
+            m  precision  recall     f1  cycle_recall  cycle_false_alarm  mean_days_early   MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                                                      
+XGB    0.917      0.669    0.73  0.698         0.978              0.384           21.839  108537.483  229523.444   623893.602   1032229.173 
+
+ĐỘ LỆCH CHUẨN:
+            m  precision  recall     f1  cycle_recall  cycle_false_alarm  mean_days_early  MAE_spend  RMSE_spend  MAE_balance  RMSE_balance
+model                                                                                                                                     
+XGB    0.144      0.039   0.011  0.016         0.009              0.024            0.019   2280.977    3459.613    11478.505     54575.335
+
+Đã lưu results/xgb_mean_seeds123.csv
+>> python .\cashflow_risks\aggregate_results.py --prefix risk --seeds 1 2 3
+TRUNG BÌNH:
+                p_star  precision  recall     f1  cycle_recall  cycle_false_alarm  mean_days_early  brier_test  ece_test
+model                                                                                                                  
+B2+risk         0.427      0.637   0.735  0.681         0.971              0.416           22.210       0.129     0.062
+XGB+risk        0.327      0.671   0.740  0.703         0.981              0.420           22.665       0.112     0.012
+XGB+risk(k=2)   0.290      0.666   0.710  0.687         0.973              0.402           21.807       0.112     0.012 
+
+ĐỘ LỆCH CHUẨN:
+                p_star  precision  recall     f1  cycle_recall  cycle_false_alarm  mean_days_early  brier_test  ece_test
+model                                                                                                                  
+B2+risk         0.042      0.048   0.024  0.018         0.012              0.051            0.309       0.007     0.011
+XGB+risk        0.023      0.042   0.017  0.015         0.011              0.031            0.281       0.004     0.007
+XGB+risk(k=2)   0.010      0.031   0.003  0.015         0.011              0.021            0.220       0.004     0.007
+
+Đã lưu results/risk_mean_seeds123.csv
+>> python .\cashflow_risks\make_report.py --seeds 1 2 3
+# Kết quả cuối cùng (test, trung bình ± độ lệch chuẩn qua 3 seed: 1, 2, 3)
+
+## Q1 - Sai số dự báo (VND)
+
+|                            | MAE_spend     | RMSE_spend    | MAE_balance    | RMSE_balance    | MAE_spend so với B2   | MAE_balance so với B2   |
+|:---------------------------|:--------------|:--------------|:---------------|:----------------|:----------------------|:------------------------|
+| B1 (TB 14 ngày)            | 131066 ± 2836 | 251495 ± 3900 | 969519 ± 12774 | 1619399 ± 50157 | +2,1%                 | +19,2%                  |
+| B2 (TB cùng thứ)           | 128358 ± 2022 | 255063 ± 3157 | 813502 ± 17697 | 1317702 ± 74982 | +0,0%                 | +0,0%                   |
+| XGB (cảnh báo theo biên m) | 108537 ± 2281 | 229523 ± 3460 | 623894 ± 11479 | 1032229 ± 54575 | -15,4%                | -23,3%                  |
+
+## Q2 - Chất lượng cảnh báo
+
+|                            | precision     | recall        | f1            | auroc         | auprc         | ks            | cycle_recall   | cycle_false_alarm   | mean_days_early   | brier_test    | ece_test      |
+|:---------------------------|:--------------|:--------------|:--------------|:--------------|:--------------|:--------------|:---------------|:--------------------|:------------------|:--------------|:--------------|
+| B1 (TB 14 ngày)            | 0,588 ± 0,042 | 0,746 ± 0,025 | 0,656 ± 0,018 | 0,825 ± 0,012 | 0,657 ± 0,028 | 0,545 ± 0,018 | 0,990 ± 0,002  | 0,570 ± 0,053       | 22,7 ± 0,2        | —             | —             |
+| B2 (TB cùng thứ)           | 0,639 ± 0,056 | 0,729 ± 0,037 | 0,679 ± 0,015 | 0,847 ± 0,011 | 0,716 ± 0,027 | 0,575 ± 0,017 | 0,967 ± 0,018  | 0,397 ± 0,058       | 22,1 ± 0,3        | —             | —             |
+| XGB (cảnh báo theo biên m) | 0,669 ± 0,039 | 0,730 ± 0,011 | 0,698 ± 0,016 | 0,872 ± 0,010 | 0,777 ± 0,019 | 0,594 ± 0,018 | 0,978 ± 0,009  | 0,384 ± 0,024       | 21,8 ± 0,0        | —             | —             |
+| XGB + p > p*               | 0,671 ± 0,042 | 0,740 ± 0,017 | 0,703 ± 0,015 | 0,888 ± 0,008 | 0,802 ± 0,017 | 0,605 ± 0,016 | 0,981 ± 0,011  | 0,420 ± 0,031       | 22,7 ± 0,3        | 0,112 ± 0,004 | 0,012 ± 0,007 |
+| XGB + p > p* (k=2)         | 0,666 ± 0,031 | 0,710 ± 0,003 | 0,687 ± 0,015 | —             | —             | —             | 0,973 ± 0,011  | 0,402 ± 0,021       | 21,8 ± 0,2        | 0,112 ± 0,004 | 0,012 ± 0,007 |
+| B2 + p > p* (đối chứng)    | 0,637 ± 0,048 | 0,735 ± 0,024 | 0,681 ± 0,018 | 0,864 ± 0,010 | 0,764 ± 0,023 | 0,575 ± 0,016 | 0,971 ± 0,012  | 0,416 ± 0,051       | 22,2 ± 0,3        | 0,129 ± 0,007 | 0,062 ± 0,011 |
+
+## Chỉ số cho p_t (test)
+
+|                | XGB + p > p*   | B2 + p > p* (đối chứng)   |
+|:---------------|:---------------|:--------------------------|
+| brier          | 0,112 ± 0,004  | 0,129 ± 0,007             |
+| brier_skill    | 0,447 ± 0,024  | 0,360 ± 0,044             |
+| log_loss       | 0,359 ± 0,015  | 0,415 ± 0,021             |
+| log_loss_skill | 0,397 ± 0,025  | 0,302 ± 0,041             |
+| auroc          | 0,888 ± 0,008  | 0,864 ± 0,010             |
+| auprc          | 0,802 ± 0,017  | 0,764 ± 0,023             |
+| cal_slope      | 0,972 ± 0,068  | 0,717 ± 0,035             |
+| cal_intercept  | 0,042 ± 0,118  | -0,536 ± 0,075            |
+| ece            | 0,012 ± 0,007  | 0,062 ± 0,011             |
+| mce            | 0,056 ± 0,019  | 0,188 ± 0,038             |
+| sharpness      | 0,297 ± 0,000  | 0,330 ± 0,002             |
+| cov50          | 0,502 ± 0,007  | 0,492 ± 0,007             |
+| cov80          | 0,796 ± 0,001  | 0,798 ± 0,007             |
+| cov90          | 0,896 ± 0,005  | 0,899 ± 0,008             |
+
+## Chỉ số p_t theo kiểu chi tiêu (XGB + p > p*)
+
+| pattern   | pos_rate      | brier         | auroc         | ece           | cal_slope     | cov80         |
+|:----------|:--------------|:--------------|:--------------|:--------------|:--------------|:--------------|
+| even      | 0,263 ± 0,013 | 0,093 ± 0,006 | 0,925 ± 0,014 | 0,034 ± 0,018 | 1,324 ± 0,164 | 0,830 ± 0,012 |
+| front     | 0,272 ± 0,040 | 0,088 ± 0,002 | 0,936 ± 0,010 | 0,033 ± 0,005 | 1,302 ± 0,154 | 0,832 ± 0,005 |
+| weekend   | 0,269 ± 0,041 | 0,108 ± 0,012 | 0,898 ± 0,009 | 0,020 ± 0,010 | 1,094 ± 0,052 | 0,821 ± 0,006 |
+| spike     | 0,315 ± 0,027 | 0,159 ± 0,012 | 0,798 ± 0,017 | 0,062 ± 0,016 | 0,559 ± 0,081 | 0,699 ± 0,020 |
+
+## Chỉ số p_t theo số ngày còn lại D (XGB + p > p*)
+
+| D     | pos_rate      | brier         | auroc         | ece           | cal_slope     | cov80         |
+|:------|:--------------|:--------------|:--------------|:--------------|:--------------|:--------------|
+| 3-4   | 0,173 ± 0,008 | 0,047 ± 0,006 | 0,965 ± 0,014 | 0,015 ± 0,004 | 0,976 ± 0,191 | 0,785 ± 0,006 |
+| 5-7   | 0,243 ± 0,000 | 0,062 ± 0,005 | 0,956 ± 0,006 | 0,014 ± 0,002 | 0,975 ± 0,063 | 0,791 ± 0,013 |
+| 8-11  | 0,278 ± 0,005 | 0,079 ± 0,003 | 0,938 ± 0,003 | 0,015 ± 0,002 | 0,973 ± 0,036 | 0,800 ± 0,013 |
+| 12-16 | 0,293 ± 0,006 | 0,101 ± 0,005 | 0,906 ± 0,007 | 0,018 ± 0,006 | 0,966 ± 0,056 | 0,802 ± 0,004 |
+| 17-21 | 0,295 ± 0,006 | 0,123 ± 0,006 | 0,867 ± 0,010 | 0,020 ± 0,008 | 0,954 ± 0,072 | 0,790 ± 0,003 |
+| 22-31 | 0,297 ± 0,005 | 0,156 ± 0,005 | 0,800 ± 0,015 | 0,022 ± 0,007 | 0,994 ± 0,092 | 0,799 ± 0,005 |
+
+## Kiểm chứng giả định phần dư độc lập
+
+| phép thử                                           | giá trị (TB ± std)   |
+|:---------------------------------------------------|:---------------------|
+| Tương quan phần dư cách 1 ngày                     | 0,011 ± 0,017        |
+| Tương quan phần dư cách 2 ngày                     | 0,014 ± 0,011        |
+| Tương quan phần dư cách 3 ngày                     | 0,013 ± 0,008        |
+| Tương quan phần dư cách 7 ngày                     | 0,020 ± 0,021        |
+| Tỉ số phương sai, D=5 (độc lập = 1)                | 1,018 ± 0,080        |
+| Tỉ số phương sai, D=10                             | 1,096 ± 0,044        |
+| Tỉ số phương sai, D=15                             | 1,134 ± 0,216        |
+| Tỉ số phương sai, D=20                             | 1,171 ± 0,104        |
+| Tỉ số phương sai, D=25                             | 1,243 ± 0,084        |
+| Độ phủ khoảng 80%, mc, all (danh nghĩa 0,80)       | 0,752 ± 0,004        |
+| Độ phủ khoảng 80%, mc, even (danh nghĩa 0,80)      | 0,769 ± 0,017        |
+| Độ phủ khoảng 80%, mc, front (danh nghĩa 0,80)     | 0,828 ± 0,003        |
+| Độ phủ khoảng 80%, mc, weekend (danh nghĩa 0,80)   | 0,837 ± 0,003        |
+| Độ phủ khoảng 80%, mc, spike (danh nghĩa 0,80)     | 0,569 ± 0,016        |
+| Độ phủ khoảng 80%, cum, all (danh nghĩa 0,80)      | 0,799 ± 0,009        |
+| Độ phủ khoảng 80%, cum, even (danh nghĩa 0,80)     | 0,860 ± 0,007        |
+| Độ phủ khoảng 80%, cum, front (danh nghĩa 0,80)    | 0,862 ± 0,010        |
+| Độ phủ khoảng 80%, cum, weekend (danh nghĩa 0,80)  | 0,866 ± 0,011        |
+| Độ phủ khoảng 80%, cum, spike (danh nghĩa 0,80)    | 0,601 ± 0,024        |
+| Độ phủ khoảng 80%, cumb, all (danh nghĩa 0,80)     | 0,796 ± 0,001        |
+| Độ phủ khoảng 80%, cumb, even (danh nghĩa 0,80)    | 0,830 ± 0,012        |
+| Độ phủ khoảng 80%, cumb, front (danh nghĩa 0,80)   | 0,832 ± 0,005        |
+| Độ phủ khoảng 80%, cumb, weekend (danh nghĩa 0,80) | 0,821 ± 0,006        |
+| Độ phủ khoảng 80%, cumb, spike (danh nghĩa 0,80)   | 0,699 ± 0,020        |
+
+## Báo sớm ở cùng mức báo nhầm
+
+Mỗi mô hình được đặt ngưỡng sao cho đúng tỉ lệ chu kỳ bình thường bị cảnh báo như bảng, rồi so tỉ lệ bắt được chu kỳ thiếu tiền và số ngày báo trước ngày cạn tiền. Cách này không phụ thuộc ngưỡng đã tune, nên thay cho chỉ số `mean_days_early` (không phân biệt được các mô hình).
+
+|                                       | tỉ lệ bắt được chu kỳ thiếu tiền   | số ngày báo trước (bỏ sót tính 0)   | trung vị số ngày báo trước (chỉ chu kỳ bắt được)   |
+|:--------------------------------------|:-----------------------------------|:------------------------------------|:---------------------------------------------------|
+| ('10%', 'B1 (TB 14 ngày)')            | 0,508 ± 0,033                      | 9,2 ± 0,7                           | 19,3 ± 0,6                                         |
+| ('10%', 'B2 (TB cùng thứ)')           | 0,610 ± 0,040                      | 11,3 ± 1,3                          | 19,5 ± 1,3                                         |
+| ('10%', 'XGB (cảnh báo theo biên m)') | 0,823 ± 0,033                      | 13,6 ± 1,0                          | 17,3 ± 0,6                                         |
+| ('10%', 'XGB + p > p*')               | 0,906 ± 0,012                      | 14,0 ± 1,0                          | 16,3 ± 1,2                                         |
+| ('10%', 'B2 + p > p* (đối chứng)')    | 0,860 ± 0,023                      | 13,0 ± 1,3                          | 16,3 ± 2,1                                         |
+| ('20%', 'B1 (TB 14 ngày)')            | 0,743 ± 0,024                      | 14,5 ± 0,7                          | 20,7 ± 0,6                                         |
+| ('20%', 'B2 (TB cùng thứ)')           | 0,827 ± 0,026                      | 16,6 ± 1,0                          | 21,3 ± 0,6                                         |
+| ('20%', 'XGB (cảnh báo theo biên m)') | 0,934 ± 0,005                      | 17,9 ± 0,4                          | 21,0 ± 0,0                                         |
+| ('20%', 'XGB + p > p*')               | 0,946 ± 0,004                      | 17,8 ± 0,5                          | 20,3 ± 0,6                                         |
+| ('20%', 'B2 + p > p* (đối chứng)')    | 0,919 ± 0,002                      | 17,0 ± 1,0                          | 20,7 ± 1,2                                         |
+| ('30%', 'B1 (TB 14 ngày)')            | 0,895 ± 0,025                      | 18,2 ± 0,8                          | 22,0 ± 0,0                                         |
+| ('30%', 'B2 (TB cùng thứ)')           | 0,928 ± 0,008                      | 19,6 ± 0,6                          | 23,0 ± 0,0                                         |
+| ('30%', 'XGB (cảnh báo theo biên m)') | 0,966 ± 0,002                      | 20,0 ± 0,3                          | 23,0 ± 0,0                                         |
+| ('30%', 'XGB + p > p*')               | 0,964 ± 0,005                      | 20,0 ± 0,3                          | 23,0 ± 0,0                                         |
+| ('30%', 'B2 + p > p* (đối chứng)')    | 0,945 ± 0,003                      | 19,5 ± 0,6                          | 22,7 ± 0,6                                         |
+
+## Ở cùng mức Precision (đúng tiêu chí của báo cáo giữa kỳ)
+
+Báo cáo giữa kỳ coi giải pháp là có ích nếu "ở mức Precision tương đương, Recall cao hơn hoặc báo sớm hơn B1". Mỗi mô hình được đặt ngưỡng cho Recall lớn nhất mà Precision vẫn ít nhất bằng mức trong bảng (bằng Precision của B1 tại biên m đã tune, hoặc 0,7). Ngưỡng đặt trên test để so sánh theo đường cong, không phải ngưỡng vận hành.
+
+|                                                   | precision đạt được   | recall        | tỉ lệ bắt được chu kỳ thiếu tiền   | báo nhầm theo chu kỳ   | số ngày báo trước (bỏ sót tính 0)   | trung vị số ngày báo trước (chỉ chu kỳ bắt được)   |
+|:--------------------------------------------------|:---------------------|:--------------|:-----------------------------------|:-----------------------|:------------------------------------|:---------------------------------------------------|
+| ('bằng B1 (0,588)', 'B1 (TB 14 ngày)')            | 0,588 ± 0,042        | 0,746 ± 0,025 | 0,990 ± 0,002                      | 0,570 ± 0,053          | 22,4 ± 0,3                          | 24,0 ± 0,0                                         |
+| ('bằng B1 (0,588)', 'B2 (TB cùng thứ)')           | 0,588 ± 0,042        | 0,784 ± 0,015 | 0,984 ± 0,011                      | 0,481 ± 0,043          | 22,2 ± 0,3                          | 24,3 ± 0,6                                         |
+| ('bằng B1 (0,588)', 'XGB (cảnh báo theo biên m)') | 0,588 ± 0,042        | 0,802 ± 0,013 | 0,992 ± 0,005                      | 0,498 ± 0,038          | 22,8 ± 0,1                          | 25,0 ± 0,0                                         |
+| ('bằng B1 (0,588)', 'XGB + p > p*')               | 0,588 ± 0,042        | 0,826 ± 0,023 | 0,993 ± 0,006                      | 0,597 ± 0,059          | 24,3 ± 0,5                          | 26,0 ± 0,0                                         |
+| ('bằng B1 (0,588)', 'B2 + p > p* (đối chứng)')    | 0,588 ± 0,042        | 0,786 ± 0,020 | 0,980 ± 0,010                      | 0,526 ± 0,053          | 22,6 ± 0,4                          | 25,0 ± 0,0                                         |
+| ('0,7', 'B1 (TB 14 ngày)')                        | 0,700 ± 0,000        | 0,402 ± 0,147 | 0,849 ± 0,106                      | 0,274 ± 0,070          | 17,1 ± 2,9                          | 21,7 ± 1,2                                         |
+| ('0,7', 'B2 (TB cùng thứ)')                       | 0,700 ± 0,000        | 0,633 ± 0,052 | 0,937 ± 0,013                      | 0,316 ± 0,016          | 19,9 ± 0,7                          | 23,3 ± 0,6                                         |
+| ('0,7', 'XGB (cảnh báo theo biên m)')             | 0,700 ± 0,000        | 0,701 ± 0,030 | 0,976 ± 0,006                      | 0,354 ± 0,030          | 20,8 ± 0,6                          | 23,3 ± 0,6                                         |
+| ('0,7', 'XGB + p > p*')                           | 0,700 ± 0,000        | 0,707 ± 0,031 | 0,978 ± 0,004                      | 0,379 ± 0,043          | 21,6 ± 1,0                          | 23,7 ± 0,6                                         |
+| ('0,7', 'B2 + p > p* (đối chứng)')                | 0,700 ± 0,000        | 0,649 ± 0,047 | 0,948 ± 0,003                      | 0,319 ± 0,026          | 19,8 ± 0,9                          | 23,3 ± 0,6                                         |
+
+## Theo 4 kiểu chi tiêu - MAE số dư cuối chu kỳ (VND)
+
+|         | B1 (TB 14 ngày)   | B2 (TB cùng thứ)   | XGB (cảnh báo theo biên m)   |
+|:--------|:------------------|:-------------------|:-----------------------------|
+| even    | 605182 ± 13826    | 554919 ± 20854     | 489180 ± 3810                |
+| front   | 1083162 ± 42295   | 781844 ± 29668     | 438988 ± 23025               |
+| weekend | 734009 ± 18589    | 645527 ± 29642     | 530679 ± 14720               |
+| spike   | 1471812 ± 33404   | 1285743 ± 6015     | 1048061 ± 11097              |
+
+## Kiểm định cặp theo seed
+
+| so_sánh        | chỉ_số            |     chênh_TB |        std | số_seed_tốt_hơn   |
+|:---------------|:------------------|-------------:|-----------:|:------------------|
+| XGB − B2       | f1                |       0,0188 |     0,0033 | 3/3               |
+| XGB − B2       | auroc             |       0,0247 |     0,0029 | 3/3               |
+| XGB − B2       | auprc             |       0,0612 |     0,0082 | 3/3               |
+| XGB − B2       | MAE_spend         |  -19820,1    |   283,678  | 3/3               |
+| XGB − B2       | MAE_balance       | -189608      |  7018,75   | 3/3               |
+| XGB − B2       | cycle_false_alarm |      -0,0125 |     0,0428 | 2/3               |
+| XGB − B1       | f1                |       0,0415 |     0,0056 | 3/3               |
+| XGB − B1       | auroc             |       0,0475 |     0,0047 | 3/3               |
+| XGB − B1       | auprc             |       0,1206 |     0,0137 | 3/3               |
+| XGB − B1       | MAE_spend         |  -22528,7    |   618,842  | 3/3               |
+| XGB − B1       | MAE_balance       | -345625      | 15432,4    | 3/3               |
+| XGB − B1       | cycle_false_alarm |      -0,1856 |     0,0389 | 3/3               |
+| XGB+risk − B2  | f1                |       0,024  |     0,0061 | 3/3               |
+| XGB+risk − B2  | auroc             |       0,0409 |     0,0081 | 3/3               |
+| XGB+risk − B2  | auprc             |       0,0862 |     0,0108 | 3/3               |
+| XGB+risk − B2  | cycle_false_alarm |       0,0233 |     0,033  | 1/3               |
+| XGB+risk − XGB | f1                |       0,0052 |     0,0033 | 3/3               |
+| XGB+risk − XGB | auroc             |       0,0163 |     0,0052 | 3/3               |
+| XGB+risk − XGB | auprc             |       0,0249 |     0,0027 | 3/3               |
+| XGB+risk − XGB | cycle_false_alarm |       0,0358 |     0,0099 | 0/3               |
+| B2+risk − B2   | f1                |       0,0023 |     0,0032 | 2/3               |
+| B2+risk − B2   | auroc             |       0,0166 |     0,0015 | 3/3               |
+| B2+risk − B2   | auprc             |       0,0482 |     0,0055 | 3/3               |
+| B2+risk − B2   | cycle_false_alarm |       0,019  |     0,0085 | 0/3               |
+
+## Kết luận tính từ số liệu
+
+- Q1: MAE chi tiêu ngày của XGB thấp hơn B2 15,4% (tốt hơn ở 3/3 seed); MAE số dư thấp hơn 23,3% (tốt hơn ở 3/3 seed).
+- Q2: F1 của XGB (biên m) hơn B2 ở 3/3 seed, chênh trung bình +0,019; XGB + p > p* hơn B2 ở 3/3 seed, chênh +0,024.
+- XGB + p > p* so với XGB cảnh báo theo biên m: chênh F1 +0,005 (tốt hơn ở 3/3 seed) - chênh rất nhỏ (< 0,01), không có ý nghĩa thực tế; tỉ lệ chu kỳ bình thường vẫn bị cảnh báo 0,420 so với 0,384 (XGB + p > p* tốt hơn ở 0/3 seed, tức là cao hơn biên m).
+- Không phụ thuộc ngưỡng (AUROC): XGB (điểm số theo biên) hơn B2 +0,025 (3/3 seed); XGB + p hơn B2 +0,041 (3/3 seed) và hơn XGB theo biên +0,016 (3/3 seed) - lớp xác suất cải thiện khả năng xếp hạng rủi ro dù F1 ở ngưỡng đã chọn gần như không đổi.
+- Báo sớm ở cùng mức báo nhầm 20%: XGB bắt được nhiều chu kỳ thiếu tiền hơn B2 +10,7 điểm phần trăm (3/3 seed) và số ngày báo trước (chu kỳ bỏ sót tính 0) hơn +1,3 ngày (3/3 seed); XGB + p hơn B2 +12,0 điểm và +1,2 ngày (3/3, 3/3 seed). Trong các chu kỳ đã bắt được, trung vị số ngày báo trước gần như bằng nhau giữa các mô hình (chênh tối đa 1,0 ngày): lợi thế là bắt được nhiều chu kỳ hơn ở cùng mức báo nhầm, không phải bắt sớm hơn trong chu kỳ đã bắt được.
+- Tiêu chí báo cáo giữa kỳ (ở Precision bằng B1, trung bình 0,588): XGB + p > p* so với B1 (TB 14 ngày): Recall +8,0 điểm phần trăm (3/3 seed), số ngày báo trước (bỏ sót tính 0) +1,8 ngày (3/3 seed), trung vị số ngày báo trước trong chu kỳ bắt được +2,0 ngày.
+- Tiêu chí báo cáo giữa kỳ (ở Precision bằng B1, trung bình 0,588): XGB + p > p* so với B2 (TB cùng thứ): Recall +4,2 điểm phần trăm (3/3 seed), số ngày báo trước (bỏ sót tính 0) +2,1 ngày (3/3 seed), trung vị số ngày báo trước trong chu kỳ bắt được +1,7 ngày.
+- Đối chứng B2 + p > p*: F1 chênh +0,002 và AUROC chênh +0,017 so với B2. Lớp xác suất giúp xếp hạng rủi ro tốt hơn, nhưng F1 ở ngưỡng chọn trên val gần như không đổi; phần chênh F1 giữa XGB và B2 đến từ mô hình dự báo.
+- Điều kiện k=2 (cảnh báo khi p > p* hai ngày liên tiếp) chỉ là thử nghiệm: tỉ lệ báo nhầm 0,402 so với 0,420 khi k=1, F1 0,687 so với 0,703 - không dùng trong giải pháp cuối.
+- Hiệu chỉnh xác suất (test, gộp seed): XGB + risk ECE = 0,007, Brier = 0,112; B2 + risk ECE = 0,062. (ECE gộp các seed nhỏ hơn trung bình ECE từng seed trong bảng Q2 vì ít nhiễu hơn.)
+- Phần dư độc lập theo ngày: tương quan giữa các ngày chỉ +0,011 đến +0,020 (gần 0), nhưng tỉ số phương sai Var(tổng)/Tổng Var nằm trong 1,02-1,24 (độc lập = 1) nên có phụ thuộc dương nhẹ; khoảng 80% của cách giả định độc lập (mc) chỉ phủ 0,752, còn cum/cumb phủ 0,799/0,796.
+- Kiểu spike vẫn bị phủ thiếu: độ phủ 80% là 0,601 (cum) và 0,699 (cumb, thêm nhóm theo tần suất chi cực lớn), so với danh nghĩa 0,80.
+- Phương pháp ước lượng p được chọn theo Brier trên val: seed 1: cumb, seed 2: cumb, seed 3: cumb.
+- Chỉ số p_t (XGB + p > p*, test): AUROC 0,888, Brier skill 0,447, độ dốc hiệu chỉnh 0,97 (1 = lý tưởng), ECE 0,012; đối chứng B2 + p > p*: AUROC 0,864, ECE 0,062.
+- F1 theo kiểu chi tiêu, XGB so với B2:
+  - even: F1 XGB − B2 = +0,008 (chưa rõ so với nhiễu giữa các seed).
+  - front: F1 XGB − B2 = +0,064 (rõ: cả 3 seed cùng dấu và > 0,02).
+  - weekend: F1 XGB − B2 = +0,006 (chưa rõ so với nhiễu giữa các seed).
+  - spike: F1 XGB − B2 = -0,007 (chưa rõ so với nhiễu giữa các seed).
+
+Lưu ý: dữ liệu mô phỏng nên kết quả chỉ cho thấy tính khả thi của cách đặt bài toán, chưa khẳng định hiệu quả với người dùng thật. `mean_days_early` chỉ dùng để so giữa các mô hình vì cảnh báo thường bật ngay từ đầu chu kỳ.
+
+Đã lưu vào results/final : Lead_table.csv, P_by_D.csv, P_by_pattern.csv, P_table.csv, Prec_table.csv, Q1_table.csv, Q2_table.csv, RESULTS.md, by_pattern_Q1_MAE_balance.csv, by_pattern_Q2.csv, diagnostics_table.csv, fig0_sanity_du_lieu.png, fig1_Q1.png, fig2_Q2.png, fig3_by_pattern.png, fig4_calibration.png, fig5_importance.png, fig6_case_study.png, fig7_p_diagnostics.png, fig9_lead_far.png, paired_diff.csv
+>> python .\cashflow_risks\summarize_extra.py 
+- MAE chi tiêu ngày (nghìn VND): B2 128.4, Ridge 114.9, Random Forest 108.8, HGB 108.6, XGBoost 108.5. XGBoost thấp hơn Ridge 5.6% và gần như bằng Random Forest, HGB (chênh 0.1%, 0.3%).
+- Bắt được chu kỳ thiếu tiền ở mức báo nhầm 20%: B2 0.827, Ridge 0.933, XGBoost 0.934. Phần lớn lợi thế so với B1/B2 đến từ ĐẶC TRƯNG (lịch sử cá nhân, chuẩn hóa theo người) chứ không riêng từ XGBoost: mô hình tuyến tính với cùng đặc trưng đã gần bằng.
+- Chi phí: với r = 2, XGB + p tốn 24.7 so với B2 26.6 (trên 100 điểm quyết định); ngưỡng Bayes 1/(1+r) cho 24.8 mà không cần tune, nhờ xác suất đã hiệu chỉnh.
+- Độ trễ: 1 yêu cầu (dựng đặc trưng + dự báo, một người, ~730 dòng lịch sử) trung vị 14 ms; mô hình 1028 KB.
+
+BOOTSTRAP (XGB + p - B2), trung bình 3 seed:
+                                 chênh_TB  ci_thấp_TB   ci_cao_TB  số_seed_CI_trên_0  số_seed_CI_dưới_0
+chỉ_số                                                                                                 
+AUROC                              0.0409      0.0320      0.0502                  3                  0
+F1 (ngưỡng chọn trên val)          0.0240      0.0119      0.0362                  3                  0
+MAE chi tiêu ngày             -19820.1261 -21969.9862 -17727.5071                  0                  3
+tỉ lệ bắt được ở báo nhầm 20%      0.1197      0.0686      0.1703                  3                  0
+
+THEO NHÓM:
+                             tỉ_lệ_thiếu_tiền  p_trung_bình  precision  recall  báo_nhầm_theo_chu_kỳ  auroc    ece
+nhóm_theo     nhóm                                                                                                
+kiểu chi tiêu even                      0.263         0.242      0.758   0.750                 0.290  0.925  0.034
+              front                     0.272         0.291      0.684   0.841                 0.385  0.936  0.033
+              spike                     0.315         0.277      0.612   0.608                 0.542  0.798  0.062
+              weekend                   0.269         0.280      0.643   0.775                 0.475  0.898  0.020
+thu nhập      allowance_1st             0.279         0.272      0.683   0.754                 0.412  0.899  0.014
+              salary_25                 0.280         0.273      0.660   0.725                 0.429  0.877  0.020
+
+ĐỘ TRỄ:
+                                                             median     max
+mục                                                                        
+1 yêu cầu: dựng đặc trưng + dự báo (ms, trung vị 40 lần)       13.8    14.0
+1 yêu cầu: lần chậm nhất trong 40 lần (ms)                     21.0    28.7
+kích thước file mô hình (KB)                                 1028.0  1056.4
+số cây XGBoost                                                120.0   128.0
+số dòng lịch sử của người dùng trong yêu cầu                  730.0   730.0
+tính xác suất p từ dự báo của 1 điểm (ms, trung vị 100 lần)     1.1     1.1
+
+BẢNG SO MÔ HÌNH:
+                          MAE_spend     MAE_balance             f1          auroc recall_at_far20 lead_at_far20 fit_seconds pred_ms_per_1k
+B1                    131066 ± 2836  969519 ± 12774  0,656 ± 0,018  0,825 ± 0,012   0,743 ± 0,024    14,5 ± 0,7   0,0 ± 0,0          1 ± 0
+B2                    128358 ± 2022  813502 ± 17697  0,679 ± 0,015  0,847 ± 0,011   0,827 ± 0,026    16,6 ± 1,0   0,0 ± 0,0          2 ± 0
+Ridge (tuyến tính)    114936 ± 2306  638540 ± 12952  0,691 ± 0,013  0,867 ± 0,008   0,933 ± 0,009    17,4 ± 0,3   4,2 ± 1,0         28 ± 4
+Random Forest         108839 ± 2248  627242 ± 11847  0,700 ± 0,017  0,872 ± 0,011   0,915 ± 0,012    17,7 ± 0,4   9,6 ± 0,4         31 ± 1
+HistGradientBoosting  108626 ± 2284  625234 ± 10331  0,700 ± 0,015  0,872 ± 0,010   0,939 ± 0,008    18,0 ± 0,3   7,7 ± 1,2         59 ± 6
+XGBoost               108537 ± 2281  623894 ± 11479  0,698 ± 0,016  0,872 ± 0,010   0,934 ± 0,005    17,9 ± 0,4  12,8 ± 1,1         29 ± 1
+>> python .\cashflow_risks\error_cases.py --seeds 1 2 3
+Đã lưu results/final/error_summary.csv, error_by_group.csv, error_cases.csv, fig11_error_cases.png, ERROR_ANALYSIS.md
+>> python .\cashflow_risks\explain.py --seed 1
+Đã lưu results/final/explain_alerts_seed1.csv (10,755 cảnh báo), explain_global_seed1.csv, explain_cases.csv, fig12_explain.png
+        feature  mean_abs_vnd
+        bal_rel      344767.0
+hist_smooth_rel      133617.0
+          dic_t       88719.0
+       we_ratio       76473.0
+         b2_rel       67677.0
+              D       65779.0
+         tgt_wd       51468.0
+          big28       44528.0
+>> python .\cashflow_risks\supplement.py --seeds 1 2 3
+# Phân tích bổ sung (test, trung bình ± độ lệch chuẩn qua 3 seed)
+
+## 1. Mất cân bằng lớp
+
+Tỉ lệ thiếu tiền ở từng tập (điểm quyết định và chu kỳ):
+
+| tập   | số điểm    | tỉ lệ điểm thiếu tiền   | số chu kỳ   | tỉ lệ chu kỳ thiếu tiền   |
+|:------|:-----------|:------------------------|:------------|:--------------------------|
+| train | 88469 ± 62 | 0,273 ± 0,008           | 3300 ± 0    | 0,286 ± 0,008             |
+| calib | 31782 ± 99 | 0,259 ± 0,020           | 1200 ± 0    | 0,271 ± 0,020             |
+| val   | 32516 ± 60 | 0,295 ± 0,012           | 1200 ± 0    | 0,311 ± 0,013             |
+| test  | 32260 ± 45 | 0,280 ± 0,005           | 1200 ± 0    | 0,295 ± 0,006             |
+
+Mô hình chính (XGBoost) dự báo **chi tiêu** (hồi quy), không phân loại trực tiếp, nên không dùng trọng số lớp hay lấy mẫu lại. Mất cân bằng chỉ tác động ở bước đặt ngưỡng cảnh báo trên xác suất p. Nhóm xử lý bằng cách chọn ngưỡng p* trên tập val để tối đa F1, và báo cáo thêm AUPRC (nhạy với lớp hiếm hơn AUROC). Bảng dưới so sánh cùng một p với các ngưỡng khác:
+
+| ngưỡng                       | giá trị ngưỡng   | precision     | recall        | f1            | cycle_recall   | cycle_false_alarm   |
+|:-----------------------------|:-----------------|:--------------|:--------------|:--------------|:---------------|:--------------------|
+| p* chọn trên val (đang dùng) | 0,327 ± 0,023    | 0,671 ± 0,042 | 0,740 ± 0,017 | 0,703 ± 0,015 | 0,981 ± 0,011  | 0,420 ± 0,031       |
+| 0,5 (mặc định)               | 0,500 ± 0,000    | 0,800 ± 0,029 | 0,588 ± 0,013 | 0,678 ± 0,012 | 0,952 ± 0,011  | 0,224 ± 0,032       |
+| tỉ lệ nền tập calib          | 0,259 ± 0,020    | 0,612 ± 0,009 | 0,799 ± 0,012 | 0,693 ± 0,010 | 0,993 ± 0,003  | 0,537 ± 0,035       |
+
+- Ngưỡng 0,5 mặc định: recall 0,588 so với 0,740 khi dùng p*, F1 0,678 so với 0,703.
+- Đổi lại, ngưỡng 0,5 giảm tỉ lệ chu kỳ bình thường bị báo nhầm từ 0,420 xuống 0,224, trong khi tỉ lệ bắt được chu kỳ thiếu tiền chỉ giảm từ 0,981 xuống 0,952. p* tối đa F1 ở mức điểm quyết định nên ưu tiên bắt được nhiều ngày có nguy cơ; nếu muốn giảm mệt mỏi vì cảnh báo thì ngưỡng cao hơn hợp lý hơn (chọn theo chi phí bỏ sót / báo nhầm, xem `Extra_cost.csv`).
+
+## 2. Công bằng theo mức thu nhập (XGB + p > p*)
+
+Chia 3 mức thu nhập bằng nhau trong từng loại thu nhập (6 nhóm, mỗi nhóm khoảng 50 người).
+
+| nhóm                 | số người   | tỉ lệ chu kỳ thiếu tiền   | bỏ sót (chu kỳ)   | báo nhầm (chu kỳ)   | precision     | recall        | AUROC         | ECE           | Brier         |
+|:---------------------|:-----------|:--------------------------|:------------------|:--------------------|:--------------|:--------------|:--------------|:--------------|:--------------|
+| allowance_1st / thấp | 53 ± 1     | 0,258 ± 0,036             | 0,012 ± 0,021     | 0,391 ± 0,052       | 0,638 ± 0,027 | 0,769 ± 0,019 | 0,906 ± 0,004 | 0,021 ± 0,011 | 0,100 ± 0,007 |
+| allowance_1st / vừa  | 49 ± 3     | 0,292 ± 0,022             | 0,026 ± 0,031     | 0,406 ± 0,047       | 0,687 ± 0,045 | 0,746 ± 0,047 | 0,890 ± 0,019 | 0,024 ± 0,006 | 0,108 ± 0,010 |
+| allowance_1st / cao  | 50 ± 2     | 0,340 ± 0,033             | 0,026 ± 0,024     | 0,444 ± 0,005       | 0,721 ± 0,054 | 0,751 ± 0,017 | 0,901 ± 0,016 | 0,031 ± 0,016 | 0,115 ± 0,001 |
+| salary_25 / thấp     | 51 ± 1     | 0,325 ± 0,021             | 0,015 ± 0,016     | 0,426 ± 0,077       | 0,696 ± 0,072 | 0,729 ± 0,044 | 0,881 ± 0,014 | 0,038 ± 0,016 | 0,119 ± 0,010 |
+| salary_25 / vừa      | 49 ± 2     | 0,255 ± 0,022             | 0,020 ± 0,020     | 0,417 ± 0,099       | 0,621 ± 0,104 | 0,704 ± 0,054 | 0,874 ± 0,051 | 0,033 ± 0,017 | 0,110 ± 0,029 |
+| salary_25 / cao      | 48 ± 1     | 0,304 ± 0,048             | 0,014 ± 0,024     | 0,443 ± 0,026       | 0,652 ± 0,038 | 0,735 ± 0,069 | 0,874 ± 0,024 | 0,019 ± 0,006 | 0,120 ± 0,004 |
+
+- Báo nhầm theo chu kỳ dao động từ 0,391 (allowance_1st / thấp) đến 0,444 (allowance_1st / cao); bỏ sót từ 0,012 (allowance_1st / thấp) đến 0,026 (allowance_1st / vừa); AUROC từ 0,874 (salary_25 / vừa) đến 0,906 (allowance_1st / thấp).
+- Lưu ý: simulator không cài khác biệt hành vi theo mức thu nhập (chi tiêu tỉ lệ với thu nhập qua ρ), nên phép thử này chỉ kiểm tra mô hình có tự tạo ra chênh lệch hay không; chưa phải bằng chứng về công bằng trên người dùng thật. Phân tích theo kiểu chi tiêu và loại thu nhập có ở `Extra_fairness.csv`.
+>> python .\cashflow_risks\check_expected.py 
+PASS  có file data/daily.csv
+PASS  có file results/final/fig0_sanity_du_lieu.png
+PASS  có file results/baselines_seed1.csv
+PASS  có file results/baselines_seed2.csv
+PASS  có file results/baselines_seed3.csv
+PASS  có file results/xgb_seed1.csv
+PASS  có file results/xgb_seed2.csv
+PASS  có file results/xgb_seed3.csv
+PASS  có file results/risk_seed1.csv
+PASS  có file results/risk_seed2.csv
+PASS  có file results/risk_seed3.csv
+PASS  có file results/rank_seed1.csv
+PASS  có file results/rank_seed2.csv
+PASS  có file results/rank_seed3.csv
+PASS  có file results/pmetrics_seed1.csv
+PASS  có file results/pmetrics_seed2.csv
+PASS  có file results/pmetrics_seed3.csv
+PASS  có file results/diagnostics_seed1.csv
+PASS  có file results/diagnostics_seed2.csv
+PASS  có file results/diagnostics_seed3.csv
+PASS  có file results/risk_points_seed1.csv
+PASS  có file results/risk_points_seed2.csv
+PASS  có file results/risk_points_seed3.csv
+PASS  có file results/final/RESULTS.md
+PASS  có file results/final/Q1_table.csv
+PASS  có file results/final/Q2_table.csv
+PASS  có file results/final/P_table.csv
+PASS  có file results/final/diagnostics_table.csv
+PASS  có file results/final/fig1_Q1.png
+PASS  có file results/final/fig2_Q2.png
+PASS  có file results/final/fig3_by_pattern.png
+PASS  có file results/final/fig4_calibration.png
+PASS  có file results/final/fig5_importance.png
+PASS  có file results/final/fig6_case_study.png
+PASS  có file results/final/fig7_p_diagnostics.png
+PASS  có file results/final/fig9_lead_far.png
+PASS  có file results/final/Lead_table.csv
+PASS  có file results/lead_seed1.csv
+PASS  có file results/lead_seed2.csv
+PASS  có file results/lead_seed3.csv
+
+-- 0. Du lieu mo phong: 300 nguoi x 24 chu ky --
+PASS  data/daily.csv co 300 nguoi  [300]
+PASS  moi nguoi co 24 chu ky
+PASS  tong 219.000 dong (300 nguoi x 730 ngay)  [219,000]
+PASS  so chu ky moi tap: train 12, calib 4, val 4, test 4
+
+-- 1. Dữ liệu và baseline (không phụ thuộc XGBoost, phải trùng gần tuyệt đối) --
+PASS  số điểm test của 3 seed = 32290 / 32208 / 32283  [[32290, 32208, 32283]]
+PASS  B1 f1 trung bình = 0.6563  [0.6563]
+PASS  B2 f1 trung bình = 0.679  [0.6790]
+PASS  B1 MAE_spend trung bình = 131066  [131066.1963]
+PASS  B2 MAE_spend trung bình = 128358  [128357.6088]
+PASS  B1 MAE_balance trung bình = 969519  [969518.9481]
+PASS  B2 MAE_balance trung bình = 813502  [813501.6037]
+
+-- 2. Q1: dự báo chi tiêu (XGBoost) --
+PASS  MAE chi tiêu ngày của XGB trong [106.000; 111.500]  [108537]
+PASS  MAE số dư của XGB trong [605.000; 640.000]  [623894]
+PASS  XGB có MAE_spend thấp hơn B2 ở cả 3 seed  [chênh -20135, -19585, -19741]
+PASS  XGB có MAE_balance thấp hơn B2 ở cả 3 seed  [chênh -189580, -196641, -182603]
+PASS  XGB giảm MAE chi tiêu so với B2 từ 12% đến 19%  [15.4%]
+
+-- 3. Q2: cảnh báo và xác suất --
+PASS  F1 của XGB (biên m) trong [0,685; 0,715]  [0.6978]
+PASS  F1 của XGB + p > p* trong [0,685; 0,715]  [0.7030]
+PASS  F1 của XGB cao hơn B2 ở cả 3 seed  [chênh +0.015, +0.019, +0.022]
+PASS  AUROC: B1 < B2 < XGB < XGB + p  [B1 0.825, B2 0.847, XGB 0.872, XGB+risk 0.888, B2+risk 0.864]
+PASS  AUROC của XGB cao hơn B2 ở cả 3 seed  [chênh +0.025, +0.022, +0.028]
+PASS  ECE của XGB + p dưới 0,03  [0.0121]
+PASS  ECE của B2 + p lớn hơn ECE của XGB + p (dự báo tốt hơn thì xác suất chuẩn hơn)  [0.0624 > 0.0121]
+PASS  Brier test của XGB + p thấp hơn B2 + p
+PASS  phương pháp ước lượng p được chọn là cum hoặc cumb (không phải mc)  [['cumb', 'cumb', 'cumb']]
+PASS  độ dốc hiệu chỉnh của XGB + p trong [0,85; 1,10]  [0.972]
+PASS  AUROC của p (XGB + p) lớn hơn 0,86  [0.888]
+PASS  độ phủ khoảng dự báo 80% của XGB + p trong [0,76; 0,83]  [0.796]
+
+-- 3b. Báo sớm ở cùng mức báo nhầm --
+PASS  mức báo nhầm thực tế bám sát mục tiêu 10% (lệch dưới 2 điểm phần trăm)  [lệch tối đa 0.001]
+PASS  mức báo nhầm thực tế bám sát mục tiêu 20% (lệch dưới 2 điểm phần trăm)  [lệch tối đa 0.001]
+PASS  mức báo nhầm thực tế bám sát mục tiêu 30% (lệch dưới 2 điểm phần trăm)  [lệch tối đa 0.001]
+PASS  ở cùng mức báo nhầm 20%: tỉ lệ bắt được B1 < B2 < XGB  [B1 0.743, B2 0.827, XGB 0.934, XGB+risk 0.946]
+PASS  XGB bắt được nhiều chu kỳ thiếu tiền hơn B2 ở cả 3 seed (mức báo nhầm 20%)
+PASS  XGB báo trước nhiều ngày hơn B2 ở cả 3 seed (chu kỳ bỏ sót tính 0)
+PASS  trung vị số ngày báo trước (chỉ chu kỳ bắt được) gần bằng nhau giữa các mô hình (chênh dưới 4 ngày) - lợi thế là bắt được nhiều hơn, không phải sớm hơn  [20.3 đến 21.3]
+
+-- 3c. Bổ sung kỹ thuật: so mô hình, chi phí, khoảng tin cậy --
+PASS  có file results/final/Extra_models.csv
+PASS  có file results/final/Extra_cost.csv
+PASS  có file results/final/Extra_bootstrap.csv
+PASS  có file results/final/Extra_fairness.csv
+PASS  có file results/final/Extra_latency.csv
+PASS  có file results/final/EXTRA_RESULTS.md
+PASS  có file results/final/fig10_extra.png
+PASS  XGBoost có MAE chi tiêu thấp hơn Ridge (tuyến tính) ở cả 3 seed
+PASS  XGBoost thấp hơn B2 ít nhất 10% MAE chi tiêu ở cả 3 seed
+PASS  XGBoost, HGB, Random Forest xấp xỉ nhau (chênh MAE dưới 3%)
+PASS  ngưỡng Bayes 1/(1+r) cho chi phí sát chi phí tối ưu (chênh dưới 5% khi r = 1, 2, 3, 5)  [r=1: +0.9%, r=2: +0.4%, r=3: +0.4%, r=5: +0.5%]
+PASS  khoảng tin cậy 95% (bootstrap theo người) của hiệu XGB + p - B2 về AUROC và tỉ lệ bắt được không chứa 0, ở cả 3 seed
+PASS  độ trễ 1 yêu cầu (dựng đặc trưng + dự báo) dưới 200 ms  [tối đa 14 ms]
+
+-- 4. Kiểm chứng phần dư độc lập --
+PASS  tương quan phần dư giữa các ngày gần 0 (|r| < 0,05)  [+0.011, +0.014, +0.013, +0.020]
+PASS  tỉ số phương sai > 1 và tăng theo D (phụ thuộc dương nhẹ)  [D=5: 1.02, D=25: 1.24]
+PASS  cách giả định độc lập (mc) phủ thiếu hơn cách không giả định (cum)  [mc 0.752 < cum 0.799]
+PASS  kiểu spike vẫn phủ thiếu rõ (cumb < 0,78) - hạn chế đã biết  [0.699]
+
+TẤT CẢ ĐẠT
+HOAN TAT sau 16.2 phut. Ket qua nam trong results\final\ (bat dau bang RESULTS.md).

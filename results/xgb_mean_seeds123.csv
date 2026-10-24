@@ -1,0 +1,2 @@
+model,m,precision,recall,f1,cycle_recall,cycle_false_alarm,mean_days_early,MAE_spend,RMSE_spend,MAE_balance,RMSE_balance
+XGB,0.8333,0.6773,0.7252,0.6999,0.9776,0.3724,21.7046,108580.7677,229511.662,623752.4863,1031614.2401

@@ -1,0 +1,7 @@
+mục,giá trị
+"1 yêu cầu: dựng đặc trưng + dự báo (ms, trung vị 40 lần)",20.875299989711493
+1 yêu cầu: lần chậm nhất trong 40 lần (ms),32.89579995907843
+số cây XGBoost,113.0
+kích thước file mô hình (KB),992.48046875
+số dòng lịch sử của người dùng trong yêu cầu,730.0
+"tính xác suất p từ dự báo của 1 điểm (ms, trung vị 100 lần)",1.2409500195644796
