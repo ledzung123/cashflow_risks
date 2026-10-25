@@ -1,6 +1,7 @@
-# SPEC v2.9 – Nhóm 11 (nguồn: mục 3 và 4.2 báo cáo giữa kỳ)
+# SPEC v2.10 – Nhóm 11 (nguồn: mục 3 và 4.2 báo cáo giữa kỳ)
 
-v2.9: thêm đánh giá chính sách chi phí/FAR với ngưỡng chọn trên validation, CI từng seed, gánh nặng cảnh báo theo chu kỳ, ablation và chính sách nhập CSV tường minh. Kết quả bổ sung ở `results/upgrades/summary/`; quy trình ở `results/upgrades/PROTOCOL.md`. Báo cáo cuối kỳ DOCX chưa được sửa theo phiên bản này.
+v2.10: xử lý dữ liệu thiếu lịch sử trong `make_dp`, cảnh báo số dư tăng giữa chu kỳ khi nhập CSV, câu giải thích trong demo (mục 15). Không đổi bộ số chính thức.
+v2.9: thêm đánh giá chính sách chi phí/FAR với ngưỡng chọn trên validation, CI từng seed, gánh nặng cảnh báo theo chu kỳ, ablation và chính sách nhập CSV tường minh. Kết quả bổ sung ở `results/upgrades/summary/`; quy trình ở `results/upgrades/PROTOCOL.md`. Báo cáo cuối kỳ (DOCX, nộp riêng, không đưa lên repo) dùng số của bộ công bố và được cập nhật theo v2.10.
 
 Thay đổi so với v1: thêm cột `split`, thêm file `*_users.csv`, chốt quy tắc mang số dư sang chu kỳ sau,
 chốt tham số simulator (mục 9). v1.2: biên m tính theo đơn vị theta_c (mục 6), thêm chỉ số mức chu kỳ (mục 6),
@@ -32,7 +33,7 @@ thêm lệnh chạy baseline (mục 10). v1.3: chốt cách ước lượng xác
 | train | 0–11 | Huấn luyện XGBoost |
 | calib | 12–15 | Dựng phân phối sai số để tính p (chỉ dùng cho việc này) |
 | val | 16–19 | Early stopping, tune biên m (baseline, XGB theo biên m), chọn p* |
-| test | 20–23 | Chỉ đánh giá, chạy một lần |
+| test | 20–23 | Chỉ đánh giá; bộ test đã được xem trong phát triển |
 Gán theo chu kỳ nên không có chu kỳ vắt qua ranh giới; thứ tự thời gian: train < calib < val < test.
 Không tập nào được dùng cho hai vai trò khác nhau (đây là điểm thầy đã chỉ ra ở bản v1).
 
@@ -42,7 +43,7 @@ Không tập nào được dùng cho hai vai trò khác nhau (đây là điểm 
   - B1, B2: Người 2 | XGBoost: Người 3
 - `risk.fit_predict(method, dp_calib, yhat_calib, [(dp_val, yhat_val), (dp_test, yhat_test)], df, K, seed) -> [p_val, p_test]` – Người 4
   - Vì số dư chỉ giảm: p = P(tổng chi D ngày > balance_t − theta_c)
-  - method "cumb" (được chọn, Brier val thấp hơn ở cả 3 seed) hoặc "mc" (mô phỏng K quỹ đạo); phân phối dựng trên tập calib
+  - method "cum", "cumb" (thêm nhóm theo tần suất chi cực lớn) hoặc "mc" (mô phỏng K quỹ đạo); chọn theo Brier trên val, lần chạy chốt chọn "cumb" ở cả 3 seed; phân phối dựng trên tập calib
 - `evaluate(dp, alert) -> dict chỉ số` – Người 2
 
 ## 6. Chỉ số và cách tune
@@ -87,7 +88,7 @@ python src/run_baselines.py --seed 1         # B1/B2: tune m trên val, đánh g
 ## 11. Bước 5 (xác suất và cảnh báo p > p*)
 - Phân phối sai số dựng trên **calib**; p* chọn trên **val** để tối đa F1; test chỉ đánh giá một lần.
 - Hiệu chỉnh xác suất báo bằng Brier và ECE (10 khoảng); kèm biểu đồ `results/calibration_seed*.png`.
-- Biến thể báo cáo thêm: `XGB+risk(k=2)` (chỉ cảnh báo khi p > p* hai ngày liên tiếp) và `B2+risk` (đối chứng: cùng cách tính p nhưng dùng dự báo của B2).
+- Biến thể báo cáo thêm: `XGB+risk(k=2)` (chỉ cảnh báo khi p > p* hai ngày liên tiếp) và `B2+risk` (đối chứng: dùng dự báo của B2 và luôn dùng phương pháp "cum", `run_risk.py`; không dùng phương pháp được chọn cho XGB nên so sánh lớp xác suất giữa hai mô hình chỉ gần đúng).
 - Lệnh: `python src/test_risk.py`; `python src/run_risk.py --seed S`; `python src/aggregate_results.py --prefix risk --seeds 1 2 3`.
 
 ## 12. Bước 6 (gộp kết quả cho báo cáo)
@@ -95,7 +96,7 @@ python src/run_baselines.py --seed 1         # B1/B2: tune m trên val, đánh g
   `run_risk.py` phải là bản mới (có lưu file này).
 - Lệnh: `python src/make_report.py --seeds 1 2 3`. Đầu ra trong `results/final/`: `RESULTS.md` (bảng và kết luận tính từ số liệu),
   `Q1_table.csv`, `Q2_table.csv`, `by_pattern_Q2.csv`, `by_pattern_Q1_MAE_balance.csv`, `paired_diff.csv` và các hình. Toàn bộ bảng và hình
-  `fig0`–`fig12` của dự án nằm trong `results/final/`, mô tả trong `RESULTS.md` và mục tương ứng của SPEC này.
+  `fig0`–`fig12` của dự án nằm trong `results/final/`, mô tả trong `RESULTS.md` và mục tương ứng của SPEC này. Từ v2.9, `results/final/` còn có `PUBLICATION.md` (nguồn của từng bảng), `Extra_bootstrap_per_seed.csv`, bảng chính sách `policies_*` và ablation lấy từ mục 20.
 - Mọi bảng là trung bình ± độ lệch chuẩn qua các seed; so sánh cặp theo seed ghi ở `paired_diff.csv`.
 - Ví dụ minh họa (fig6) chọn theo quy tắc cố định (seed đầu, kiểu "front"), không phải ví dụ đại diện.
 
@@ -130,6 +131,10 @@ python src/run_baselines.py --seed 1         # B1/B2: tune m trên val, đánh g
   nhiều nhất, theo SHAP (`explain.contributions`, mục 18), tính bằng nghìn đồng, bỏ đóng góp dưới 1 nghìn đồng.
 - Kiểm tra: `node src/test_demo.js demo.html` (cần Node.js và gói jsdom: `npm install jsdom`), duyệt mọi ngày và chu kỳ, kiểm tra không lỗi và kết luận khớp dữ liệu.
 - Mọi file demo cần `demo_template.html` nằm cùng thư mục với `make_demo.py`.
+- (v2.10) Dữ liệu không thỏa giả định:
+  - **Thiếu lịch sử:** `make_dp` bỏ điểm quyết định có ít hơn `MIN_HISTORY` = 28 ngày lịch sử của chính người đó (cửa sổ B2 và `scale`), và không tính θ khi trước chu kỳ có ít hơn 14 ngày; có cảnh báo, báo lỗi nếu không còn điểm nào. Trước đây CSV có thu nhập 2 tuần/lần làm B2 đọc chỉ số âm, XGB ra tổng chi 0 và p = 0 sai. Dữ liệu mô phỏng không bị ảnh hưởng (đã kiểm `dp` giống hệt ở seed 1, 2, 3).
+  - **Số dư tăng giữa chu kỳ:** khoản tiền vào nhỏ hơn `income_min_ratio` × thu nhập lớn nhất và chi âm (hoàn tiền) vi phạm giả định "số dư chỉ giảm" (mục 1): nhãn có thể có `dip_day` nhưng y = 0, và p bỏ qua khoản thu tương lai. `import_real` **chỉ phát hiện và cảnh báo** (`thu_nhap_giua_ky`, `chi_am_sau_ngay_nhan_dau`, `vi_pham_so_du_chi_giam` trong `attrs["quality"]`), demo CSV hiện lưu ý; mô hình và định nghĩa nhãn chưa xử lý trường hợp này.
+- (v2.10) Khi đang cảnh báo mà đường số dư dự báo trung bình chưa chạm θ (cảnh báo dựa trên xác suất, τ ≈ 0,3 < 0,5), demo ghi thêm câu giải thích; `test_demo.js` kiểm tra câu này khớp dữ liệu ở mọi ngày.
 
 ## 6c. Chỉ số không phụ thuộc ngưỡng (AUROC, AUPRC, KS) – SPEC v2.3, KS thêm ở v2.7
 - Điểm số rủi ro liên tục cho mọi mô hình trên cùng tập test: B1, B2, XGB (theo biên m): `(theta - số dư dự kiến cuối chu kỳ) / theta`
@@ -188,7 +193,7 @@ python src/run_baselines.py --seed 1         # B1/B2: tune m trên val, đánh g
 - **Công bằng theo mức thu nhập** (`supplement.py`): chia 3 mức thu nhập bằng nhau TRONG từng loại thu nhập (6 nhóm), so bỏ sót, báo nhầm,
   Precision, Recall, AUROC, ECE, Brier. Simulator không cài khác biệt hành vi theo thu nhập, nên phép thử chỉ kiểm tra mô hình có tự tạo ra chênh
   lệch hay không. Đầu ra: `fairness_income.csv`, `SUPPLEMENT.md`.
-- **Tái lập:** phiên bản thư viện ghim trong `requirements.txt` (Python 3.12.10); `run_all.ps1` và `run_extras.ps1` cài từ file này
+- **Tái lập:** phiên bản thư viện ghim trong `requirements.txt` (bộ đầu tiên chạy với Python 3.12.10; bảng lõi chốt chạy với Python 3.12.14; phần mục 20 ghi runtime riêng trong `results/upgrades/runtime_packages.json`); `run_all.ps1` và `run_extras.ps1` cài từ file này
   (bỏ qua bằng `-SkipInstall`). Khác phiên bản xgboost có thể làm số của các dòng XGB lệch nhẹ; B1/B2 không đổi.
 - **Phạm vi dữ liệu:** `DATA_CARD.md` ghi nguồn sinh dữ liệu, quy mô, biến, giả định và giới hạn. `data/daily.csv` là dữ liệu mô phỏng, không phải dữ liệu giao dịch thật.
 - Tách tập hiện tại là theo thời gian trên cùng 300 người mô phỏng. Nó đánh giá dự báo các chu kỳ sau của nhóm người đã có lịch sử, chưa đánh giá khả năng tổng quát hóa sang người dùng hoàn toàn mới.
@@ -199,3 +204,18 @@ python src/run_baselines.py --seed 1         # B1/B2: tune m trên val, đánh g
 - Mỗi vai trò dùng đúng giai đoạn thời gian tương ứng: chu kỳ 0–11 cho train, 12–15 cho calib, 16–19 cho val, 20–23 cho test. Các đặc trưng của người dùng test vẫn được phép dùng lịch sử giao dịch trước thời điểm dự báo của chính người đó; nhãn test không tham gia fit, calibration hay chọn ngưỡng.
 - Đây là phép đánh giá phụ về tổng quát hóa sang người mô phỏng khác, không thay thế đánh giá chính theo thời gian và không chứng minh hiệu quả trên người thật.
 - `run_all.ps1` chạy `run_user_holdout.py --seeds 1 2 3`, sau đó `summarize_user_holdout.py` tạo `results/user_holdout/USER_HOLDOUT.md` và các bảng CSV.
+
+
+## 20. Chính sách ngưỡng, độ tin cậy và ablation (`policies.py`, `run_upgrade.py`) – SPEC v2.9
+- Quy trình chi tiết: `results/upgrades/PROTOCOL.md`. Kết quả: `results/upgrades/summary/UPGRADE_RESULTS.md`; các bảng được công bố lại vào `results/final/` (xem `PUBLICATION.md`).
+- Chính sách định trước, ngưỡng **chỉ chọn trên validation**, khóa lại rồi đo test: F1 (lưới cũ), FAR20 (phân vị cao của điểm lớn nhất mỗi chu kỳ âm val), chi phí FP=1/FN=r với r ∈ {1,2,3,5,10,20} (duyệt chính xác, hòa thì chọn ngưỡng cao hơn), Bayes p > 1/(1+r) cho mô hình có xác suất. Báo đủ mọi chính sách; không chọn chính sách thắng theo test.
+- Đo thêm gánh nặng cảnh báo: số ngày cảnh báo trung bình mỗi chu kỳ bình thường, tỉ lệ chu kỳ bình thường bị cảnh báo ≥ 5 ngày (chỉ tính điểm quyết định đủ điều kiện).
+- Bootstrap ghép cặp 500 lần theo người, giữ cố định mô hình và ngưỡng; báo CI95% từng seed và mean/SD qua seed, không lấy trung bình cận CI.
+- Ablation 3 seed, cùng hyperparameter, early stopping trên val: bỏ lịch sử cá nhân (`hist_dic_rel`, `hist_smooth_rel`, `n_prev`) hoặc bỏ nhóm lịch/thống kê gần đây (13 đặc trưng, danh sách trong PROTOCOL). So XGB biên với XGB+risk là đối chứng riêng cho lớp xác suất.
+- Chạy cho cả temporal và user-holdout (mục 19). Lưu checkpoint có SHA256; `run_upgrade.ps1 -Stage analysis` tính lại bảng và hình từ dự báo đã lưu.
+- Lệnh: `.
+un_upgrade.ps1` hoặc `python src/run_upgrade.py --stage all|fit|analysis --seeds 1 2 3 --B 500`.
+
+## Cập nhật kết quả ngày 23/10/2026
+
+Số liệu và diễn giải hiện hành ghi ở **một nơi duy nhất**: `results/final/PUBLICATION.md` (nguồn từng bảng) và mục "Cập nhật kết quả ngày 23/10/2026" đầu `THAY_DOI.md`. Không chép lại số ở đây để tránh lệch khi cập nhật.

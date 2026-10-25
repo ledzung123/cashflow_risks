@@ -5,7 +5,7 @@ Sự kiện cần ước lượng (SPEC mục 2): chu kỳ thiếu tiền <=> s�
   <=> tổng chi D ngày tới S_D > balance_t - theta_c      (số dư chỉ giảm giữa chu kỳ)
   => p_t = P(S_D > balance_t - theta_c | thông tin đến ngày t)
 
-Hai cách ước lượng phân phối của S_D từ SAI SỐ DỰ BÁO trên tập val:
+Hai cách ước lượng phân phối của S_D từ SAI SỐ DỰ BÁO trên tập calib:
   "mc"  : mô phỏng K quỹ đạo chi D ngày = dự báo + sd_người × sai số chuẩn hóa lấy mẫu độc lập theo ngày
   "cum" : lấy thẳng phân phối thực nghiệm của tỉ lệ q = (tổng chi thật)/(tổng chi dự báo) trên val,
           chia nhóm theo D và theo độ biến động của người đó (cv); p = P(q > ngưỡng/tổng dự báo)
@@ -118,7 +118,7 @@ def mc_prob(zmat_pool, dp, yhat, sd, K=500, seed=0, chunk=100, max_pool=300_000)
 
 def fit_predict(method, dp_calib, yhat_calib, targets, df, K=500, seed=0):
     """Dựng phân phối sai số trên tập CALIB, rồi tính p cho từng (dp, yhat) trong `targets` (val, test, ...).
-    method: "cum" (chia nhóm theo D và cv), "cumb" (thêm nhóm theo số ngày chi lớn big28), "mc" (mô phỏng K quỹ đạo).
+    method: "cum" (chia nhóm theo D và cv), "cumb" (thêm nhóm theo tần suất ngày chi > 5x mức TB 28 ngày, `bigrate` trên tối đa 84 ngày), "mc" (mô phỏng K quỹ đạo).
     Tập calib chỉ dùng cho việc này: không dùng để chọn p*, early stopping hay đánh giá."""
     sd_c, cv_c = volatility(df, dp_calib)
     if method in ("cum", "cumb"):

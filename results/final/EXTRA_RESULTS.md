@@ -15,28 +15,30 @@
 
 |                                           |   r=1 |   r=2 |   r=3 |   r=5 |   r=10 |   r=20 |
 |:------------------------------------------|------:|------:|------:|------:|-------:|-------:|
-| B1                                        | 19.83 | 28.62 | 35.64 | 46.44 |  64.42 |  71.87 |
-| B2                                        | 17.68 | 26.55 | 33.37 | 44.09 |  61.49 |  71.63 |
-| XGB (điểm biên)                           | 15.55 | 24.98 | 32.02 | 42.12 |  56.31 |  68.17 |
-| XGB + p                                   | 15.51 | 24.7  | 30.77 | 38.66 |  49.18 |  59.48 |
+| B1                                        | 19.95 | 28.99 | 35.71 | 46.74 |  65.37 |  72.11 |
+| B2                                        | 17.9  | 26.78 | 33.78 | 44.29 |  62.67 |  72.02 |
+| XGB (điểm biên)                           | 15.62 | 25.44 | 32.22 | 42.3  |  57.37 |  70.01 |
+| XGB + p                                   | 15.57 | 24.83 | 30.82 | 38.93 |  49.67 |  59.87 |
 | XGB + p, ngưỡng Bayes 1/(1+r), không tune | 15.6  | 24.83 | 30.81 | 38.75 |  49.42 |  59.64 |
 
-## Khoảng tin cậy bootstrap theo người (500 lần... xem boot_seed), trung bình 3 seed
+## Bootstrap theo người: từng seed có CI95% riêng
 
-|                                                                |    chênh_TB |   ci_thấp_TB |   ci_cao_TB |   số_seed_CI_trên_0 |   số_seed_CI_dưới_0 |
-|:---------------------------------------------------------------|------------:|-------------:|------------:|--------------------:|--------------------:|
-| ('XGB (điểm biên) - B2', 'AUROC')                              |      0.0248 |       0.0183 |      0.0315 |                   3 |                   0 |
-| ('XGB (điểm biên) - B2', 'F1 (ngưỡng chọn trên val)')          |      0.0209 |       0.0081 |      0.0335 |                   3 |                   0 |
-| ('XGB (điểm biên) - B2', 'MAE chi tiêu ngày')                  | -19776.8    |  -21907.8    | -17691.6    |                   0 |                   3 |
-| ('XGB (điểm biên) - B2', 'tỉ lệ bắt được ở báo nhầm 20%')      |      0.1084 |       0.0621 |      0.1598 |                   3 |                   0 |
-| ('XGB + p - B2', 'AUROC')                                      |      0.0411 |       0.0323 |      0.0503 |                   3 |                   0 |
-| ('XGB + p - B2', 'F1 (ngưỡng chọn trên val)')                  |      0.0225 |       0.0101 |      0.0345 |                   3 |                   0 |
-| ('XGB + p - B2', 'MAE chi tiêu ngày')                          | -19776.8    |  -21907.8    | -17691.6    |                   0 |                   3 |
-| ('XGB + p - B2', 'tỉ lệ bắt được ở báo nhầm 20%')              |      0.1188 |       0.0673 |      0.1725 |                   3 |                   0 |
-| ('XGB + p - XGB (điểm biên)', 'AUROC')                         |      0.0162 |       0.0105 |      0.0227 |                   3 |                   0 |
-| ('XGB + p - XGB (điểm biên)', 'F1 (ngưỡng chọn trên val)')     |      0.0016 |      -0.0039 |      0.0069 |                   0 |                   0 |
-| ('XGB + p - XGB (điểm biên)', 'MAE chi tiêu ngày')             |      0      |       0      |      0      |                   0 |                   0 |
-| ('XGB + p - XGB (điểm biên)', 'tỉ lệ bắt được ở báo nhầm 20%') |      0.0104 |      -0.0085 |      0.0276 |                   0 |                   0 |
+Trung bình và SD qua seed không phải CI95% gộp. Xem Extra_bootstrap_per_seed.csv.
+
+|                                                                |    chênh_TB |   độ_lệch_chuẩn_seed |   số_seed_CI_trên_0 |   số_seed_CI_dưới_0 |
+|:---------------------------------------------------------------|------------:|---------------------:|--------------------:|--------------------:|
+| ('XGB (điểm biên) - B2', 'AUROC')                              |      0.0248 |               0.003  |                   3 |                   0 |
+| ('XGB (điểm biên) - B2', 'F1 (ngưỡng chọn trên val)')          |      0.0209 |               0.006  |                   3 |                   0 |
+| ('XGB (điểm biên) - B2', 'MAE chi tiêu ngày')                  | -19776.8    |             285.583  |                   0 |                   3 |
+| ('XGB (điểm biên) - B2', 'tỉ lệ bắt được ở báo nhầm 20%')      |      0.1084 |               0.023  |                   3 |                   0 |
+| ('XGB + p - B2', 'AUROC')                                      |      0.0411 |               0.0083 |                   3 |                   0 |
+| ('XGB + p - B2', 'F1 (ngưỡng chọn trên val)')                  |      0.0225 |               0.0044 |                   3 |                   0 |
+| ('XGB + p - B2', 'MAE chi tiêu ngày')                          | -19776.8    |             285.583  |                   0 |                   3 |
+| ('XGB + p - B2', 'tỉ lệ bắt được ở báo nhầm 20%')              |      0.1188 |               0.0337 |                   3 |                   0 |
+| ('XGB + p - XGB (điểm biên)', 'AUROC')                         |      0.0162 |               0.0053 |                   3 |                   0 |
+| ('XGB + p - XGB (điểm biên)', 'F1 (ngưỡng chọn trên val)')     |      0.0016 |               0.0016 |                   0 |                   0 |
+| ('XGB + p - XGB (điểm biên)', 'MAE chi tiêu ngày')             |      0      |               0      |                   0 |                   0 |
+| ('XGB + p - XGB (điểm biên)', 'tỉ lệ bắt được ở báo nhầm 20%') |      0.0104 |               0.0131 |                   0 |                   0 |
 
 ## Theo nhóm (XGB + p, trung bình 3 seed)
 
@@ -63,6 +65,6 @@
 ## Kết luận tính từ số liệu
 
 - MAE chi tiêu ngày (nghìn VND): B2 128.4, Ridge 114.9, Random Forest 108.8, HGB 108.6, XGBoost 108.6. XGBoost thấp hơn Ridge 5.5% và gần như bằng Random Forest, HGB (chênh 0.0%, 0.2%).
-- Bắt được chu kỳ thiếu tiền ở mức báo nhầm 20%: B2 0.827, Ridge 0.933, XGBoost 0.935. Phần lớn lợi thế so với B1/B2 đến từ ĐẶC TRƯNG (lịch sử cá nhân, chuẩn hóa theo người) chứ không riêng từ XGBoost: mô hình tuyến tính với cùng đặc trưng đã gần bằng.
-- Chi phí: với r = 2, XGB + p tốn 24.7 so với B2 26.6 (trên 100 điểm quyết định); ngưỡng Bayes 1/(1+r) cho 24.8 mà không cần tune, nhờ xác suất đã hiệu chỉnh.
+- Bắt được chu kỳ thiếu tiền ở mức báo nhầm 20%: B2 0.827, Ridge 0.933, XGBoost 0.935. Các mô hình học máy gần nhau; chưa thể quy phần lớn lợi thế cho riêng lịch sử cá nhân. Ablation cho thấy bỏ nhóm này gần như không đổi MAE chi tiêu. Các cột FAR20 ở bảng mô hình là đường đánh đổi mô tả trên test.
+- Chi phí: với r = 2, XGB + p tốn 24.8 so với B2 26.8 (trên 100 điểm quyết định); ngưỡng Bayes 1/(1+r) cho 24.8 mà không cần tune, nhờ xác suất đã hiệu chỉnh.
 - Độ trễ: 1 yêu cầu (dựng đặc trưng + dự báo, một người, ~730 dòng lịch sử) trung vị 21 ms; mô hình 940 KB.

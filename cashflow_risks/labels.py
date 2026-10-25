@@ -5,12 +5,15 @@ Quy ước:
   - prepare_df(df): sắp xếp theo (user_id, date), reset index. MỌI hàm khác giả định df đã qua prepare_df.
   - dp.row = vị trí của ngày t trong df đã prepare (dùng để lấy lịch sử <= t và chi tiêu thật t+1..t+D).
 """
+import warnings
+
 import numpy as np
 import pandas as pd
 
 HORIZON_MAX = 31          # D tối đa (chu kỳ dài nhất = 31 ngày)
 THETA_WINDOW = 14         # theta_c = chi tiêu TB/ngày của 14 ngày trước ngày nhận tiền
 MIN_D = 3                 # chỉ xét điểm quyết định còn >= 3 ngày đến kỳ nhận tiền
+MIN_HISTORY = 28          # cửa sổ dài nhất mà B2 và đặc trưng (scale = TB 28 ngày) đọc ngược từ ngày t
 
 
 def prepare_df(df):
@@ -24,6 +27,7 @@ def prepare_df(df):
 def make_dp(df):
     """Bảng điểm quyết định. Mỗi dòng = (người, chu kỳ, ngày t) thỏa SPEC mục 2."""
     spend = df["spend"].to_numpy(dtype=float)
+    hist_pos = df.groupby("user_id").cumcount().to_numpy()      # số ngày lịch sử của chính người đó trước dòng này
     grp = df.groupby(["user_id", "cycle_id"], sort=False)
 
     first_row = grp.cumcount() == 0
@@ -33,7 +37,7 @@ def make_dp(df):
     # theta_c: trung bình 14 ngày ngay trước ngày nhận tiền (chu kỳ 0 không đủ lịch sử -> bỏ)
     theta = np.full(len(keys), np.nan)
     for i, r0 in enumerate(start_rows):
-        if keys.cycle_id[i] >= 1:
+        if keys.cycle_id[i] >= 1 and hist_pos[r0] >= THETA_WINDOW:     # tránh đọc lẫn dữ liệu người khác
             theta[i] = spend[r0 - THETA_WINDOW:r0].mean()
     keys["theta_c"] = theta
 
@@ -50,6 +54,14 @@ def make_dp(df):
     d = d.merge(first_dip, on=["user_id", "cycle_id"], how="left")
 
     keep = (d.D >= MIN_D) & (d.balance >= d.theta_c)
+    # B2 và chuẩn hóa XGB (TB 28 ngày) cần đủ 28 ngày lịch sử của CHÍNH người đó, nếu không sẽ đọc lẫn dữ liệu khác
+    # (chỉ xảy ra với CSV thật có chu kỳ ngắn; dữ liệu mô phỏng luôn đủ vì chu kỳ 0 dài >= 31 ngày).
+    short = keep & (hist_pos[d["row"].to_numpy()] < MIN_HISTORY - 1)
+    if short.any():
+        warnings.warn(f"Bỏ {int(short.sum())} điểm quyết định chưa đủ {MIN_HISTORY} ngày lịch sử.", stacklevel=2)
+        keep &= ~short
+    if not keep.any():
+        raise ValueError(f"Không còn điểm quyết định nào: cần ít nhất {MIN_HISTORY} ngày lịch sử trước điểm quyết định đầu tiên.")
     dp = d[keep].rename(columns={"day_in_cycle": "t", "balance": "balance_t"})
     dp = dp[["user_id", "cycle_id", "t", "row", "date", "balance_t", "D", "theta_c", "end_balance",
              "y", "dip_day", "split", "pattern", "income_type"]].reset_index(drop=True)

@@ -1,13 +1,13 @@
-﻿so_sánh,chỉ_số,chênh_TB,ci_thấp_TB,ci_cao_TB,số_seed_CI_trên_0,số_seed_CI_dưới_0
-XGB (điểm biên) - B2,AUROC,0.0248,0.0183,0.0315,3,0
-XGB (điểm biên) - B2,F1 (ngưỡng chọn trên val),0.0209,0.0081,0.0335,3,0
-XGB (điểm biên) - B2,MAE chi tiêu ngày,-19776.8412,-21907.8415,-17691.5702,0,3
-XGB (điểm biên) - B2,tỉ lệ bắt được ở báo nhầm 20%,0.1084,0.0621,0.1598,3,0
-XGB + p - B2,AUROC,0.0411,0.0323,0.0503,3,0
-XGB + p - B2,F1 (ngưỡng chọn trên val),0.0225,0.0101,0.0345,3,0
-XGB + p - B2,MAE chi tiêu ngày,-19776.8412,-21907.8415,-17691.5702,0,3
-XGB + p - B2,tỉ lệ bắt được ở báo nhầm 20%,0.1188,0.0673,0.1725,3,0
-XGB + p - XGB (điểm biên),AUROC,0.0162,0.0105,0.0227,3,0
-XGB + p - XGB (điểm biên),F1 (ngưỡng chọn trên val),0.0016,-0.0039,0.0069,0,0
-XGB + p - XGB (điểm biên),MAE chi tiêu ngày,0.0,0.0,0.0,0,0
-XGB + p - XGB (điểm biên),tỉ lệ bắt được ở báo nhầm 20%,0.0104,-0.0085,0.0276,0,0
+﻿so_sánh,chỉ_số,chênh_TB,độ_lệch_chuẩn_seed,số_seed_CI_trên_0,số_seed_CI_dưới_0
+XGB (điểm biên) - B2,AUROC,0.0248,0.003,3,0
+XGB (điểm biên) - B2,F1 (ngưỡng chọn trên val),0.0209,0.006,3,0
+XGB (điểm biên) - B2,MAE chi tiêu ngày,-19776.8412,285.5834,0,3
+XGB (điểm biên) - B2,tỉ lệ bắt được ở báo nhầm 20%,0.1084,0.023,3,0
+XGB + p - B2,AUROC,0.0411,0.0083,3,0
+XGB + p - B2,F1 (ngưỡng chọn trên val),0.0225,0.0044,3,0
+XGB + p - B2,MAE chi tiêu ngày,-19776.8412,285.5834,0,3
+XGB + p - B2,tỉ lệ bắt được ở báo nhầm 20%,0.1188,0.0337,3,0
+XGB + p - XGB (điểm biên),AUROC,0.0162,0.0053,3,0
+XGB + p - XGB (điểm biên),F1 (ngưỡng chọn trên val),0.0016,0.0016,0,0
+XGB + p - XGB (điểm biên),MAE chi tiêu ngày,0.0,0.0,0,0
+XGB + p - XGB (điểm biên),tỉ lệ bắt được ở báo nhầm 20%,0.0104,0.0131,0,0

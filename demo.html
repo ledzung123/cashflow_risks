@@ -189,7 +189,8 @@ function renderFlow(){
       ["3. Khả năng chi vượt mức cho phép", pct(day.p), "mức cho phép: "+money(room)+" (số dư trừ ngưỡng θ = "+money(cy.theta)+")"],
       ["4. Quyết định", day.al ? "Cảnh báo" : "Không cảnh báo", "so với ngưỡng τ = "+pct(DATA.meta.tau)+(hit?"; số dư dự kiến chạm θ vào ngày "+dateOf(cy,hit):"; số dư dự kiến không chạm θ")]
     ];
-    if (day.al){ v.className="risk"; v.textContent = "Có nguy cơ: khả năng thiếu tiền trước kỳ nhận là "+pct(day.p)+"."; }
+    if (day.al){ v.className="risk"; v.textContent = "Có nguy cơ: khả năng thiếu tiền trước kỳ nhận là "+pct(day.p)+"."
+      + (hit ? "" : " Theo dự báo trung bình, số dư chưa chạm ngưỡng θ trong kỳ này; hệ thống vẫn cảnh báo vì khả năng chi vượt mức cho phép cao hơn ngưỡng τ = "+pct(DATA.meta.tau)+"."); }
     else { v.className="safe"; v.textContent = "Tạm an toàn: khả năng thiếu tiền chỉ "+pct(day.p)+", dưới ngưỡng cảnh báo."; }
   } else if (day.st==="b"){
     steps = [["1. Biết đến hết ngày "+day.t, money(day.b), "số dư hiện tại"],["2. Dự báo","Không cần","số dư đã dưới ngưỡng θ = "+money(cy.theta)],["3. Khả năng","—",""],["4. Quyết định","Đã thiếu","hệ thống không còn cảnh báo sớm"]];

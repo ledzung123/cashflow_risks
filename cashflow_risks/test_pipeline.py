@@ -122,7 +122,31 @@ with warnings.catch_warnings(record=True) as w:
     bad = load_user_csv(raw, missing_policy="zero", balance_policy="ffill")
 q = bad.attrs["quality"]
 assert (q["o_trong_hoac_loi"], q["dong_chi_am"], q["ngay_thieu"], q["so_du_thieu"]) == (1, 1, 1, 1) and q["ngay_ngoai_lai"] >= 1, q
-assert len(w) == 5 and len(bad) == len(ex), (len(w), len(bad), len(ex))
+assert len(w) == 6 and len(bad) == len(ex), (len(w), len(bad), len(ex))     # 5 cảnh báo chất lượng + 1 cảnh báo số dư tăng giữa kỳ (chi âm)
+assert q["vi_pham_so_du_chi_giam"] and q["chi_am_sau_ngay_nhan_dau"] == 1
 assert ex.attrs["quality"]["ngay_ngoai_lai"] == 0 and not ex.attrs["quality"]["dong_chi_am"]
+assert not ex.attrs["quality"]["vi_pham_so_du_chi_giam"]
 print("OK nhập CSV thật: cảnh báo và điền dữ liệu theo chính sách đã chọn")
+
+# 10. CSV thật vi phạm giả định: chu kỳ ngắn (thiếu lịch sử 28 ngày) và tiền vào giữa chu kỳ
+from labels import MIN_HISTORY
+from baselines import B2_WINDOW
+days = pd.date_range("2025-01-01", periods=120)
+biweekly = pd.DataFrame({"date": days.strftime("%Y-%m-%d"), "spend": 100_000,
+                         "income": np.where(np.arange(120) % 14 == 0, 2_000_000, 0)})
+with warnings.catch_warnings(record=True) as w:
+    warnings.simplefilter("always")
+    dfb = prepare_df(load_user_csv(biweekly))
+    dpb = make_dp(dfb)
+assert any("chưa đủ" in str(x.message) for x in w), "phải cảnh báo khi bỏ điểm thiếu lịch sử"
+pos = dfb.groupby("user_id").cumcount().to_numpy()
+assert (pos[dpb.row.to_numpy()] >= MIN_HISTORY - 1).all(), "mọi điểm quyết định phải có đủ 28 ngày lịch sử"
+assert (dpb.row.to_numpy() - (B2_WINDOW - 1) >= 0).all(), "B2 không được đọc chỉ số âm"
+inc = np.zeros(120); inc[[0, 31, 59, 90]] = 6_000_000; inc[[15, 45]] = 1_500_000
+with warnings.catch_warnings(record=True) as w:
+    warnings.simplefilter("always")
+    side = load_user_csv(pd.DataFrame({"date": days.strftime("%Y-%m-%d"), "spend": 150_000, "income": inc}))
+assert side.attrs["quality"]["thu_nhap_giua_ky"] == 2 and side.attrs["quality"]["vi_pham_so_du_chi_giam"]
+assert any("giữa chu kỳ" in str(x.message) for x in w)
+print("OK CSV vi phạm giả định: bỏ điểm thiếu lịch sử, cảnh báo tiền vào giữa chu kỳ")
 print("TẤT CẢ OK")

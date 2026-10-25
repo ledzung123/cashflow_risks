@@ -1,3 +1,5 @@
+> Bộ công bố hiện hành: xem [PUBLICATION.md](PUBLICATION.md) và [UPGRADE_RESULTS.md](UPGRADE_RESULTS.md). FAR20 trong báo cáo lõi là đường đánh đổi mô tả; dùng far20_val cho chính sách chọn trên validation.
+
 # Kết quả cuối cùng (test, trung bình ± độ lệch chuẩn qua 3 seed: 1, 2, 3)
 
 ## Q1 - Sai số dự báo (VND)

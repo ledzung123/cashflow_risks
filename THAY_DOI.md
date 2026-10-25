@@ -1,4 +1,46 @@
 # Nhật ký thay đổi
+## Đợt 7 — sửa các lỗi đã xác nhận (23/10/2026)
+
+**Không đổi bộ số chính thức** (`results/final/`, `ket_qua_tham_chieu/` giữ nguyên).
+
+| #   | Lỗi (đã tái hiện trước khi sửa)                                                                                                                                                                                                | Sửa                                                                                                                                                                                 | File                                 |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| R-1 | CSV thu nhập 2 tuần/lần: điểm quyết định đầu tiên thiếu lịch sử 28 ngày, B2 đọc chỉ số âm (lấy vòng xuống cuối mảng), `scale` = NaN, XGB ra tổng chi 0 nên p = 0 và báo "an toàn" sai. Cùng lỗi ở θ khi trước chu kỳ < 14 ngày | `make_dp` bỏ điểm có < `MIN_HISTORY` = 28 ngày lịch sử của chính người đó, không tính θ khi < 14 ngày; cảnh báo, báo lỗi nếu không còn điểm                                         | `labels.py`                          |
+| R-2 | Tiền vào giữa chu kỳ / chi âm làm số dư tăng, trái giả định "số dư chỉ giảm": ví dụ số dư thủng θ ngày 23 nhưng y = 0                                                                                                          | Cách nhanh: phát hiện, cảnh báo, ghi `thu_nhap_giua_ky`, `chi_am_sau_ngay_nhan_dau`, `vi_pham_so_du_chi_giam` vào `attrs["quality"]`; demo CSV hiện lưu ý. Chưa đổi định nghĩa nhãn | `import_real.py`, `make_demo.py`     |
+| R-3 | Demo báo "Có nguy cơ" nhưng đường dự báo trung bình không chạm θ, không giải thích (269/2.129 ngày)                                                                                                                            | Thêm câu giải thích trong kết luận; `test_demo.js` kiểm tra độc lập từ dữ liệu ở mọi ngày                                                                                           | `demo_template.html`, `test_demo.js` |
+| R-4 | Docstring `risk.py` ghi phân phối dựng "trên val" và cumb dùng "big28"                                                                                                                                                         | Sửa thành calib và `bigrate` (5×, 84 ngày)                                                                                                                                          | `risk.py`                            |
+
+**Kiểm chứng:**
+- `dp` giống hệt trước khi sửa ở seed 1, 2, 3 (SHA256 trên bảng `dp`: 185.161 / 185.070 / 184.851 điểm), nên mọi bước sau và bộ số chính thức không đổi.
+- `test_pipeline.py` thêm mục 10 (CSV chu kỳ ngắn và tiền vào giữa kỳ); mục 9 nay kỳ vọng 6 cảnh báo thay vì 5 (thêm cảnh báo số dư tăng do dòng chi âm trong dữ liệu test). Cả 3 bộ test: `TẤT CẢ OK`. `check_conventions`: `TAT CA DAT`. `check_extras --skip-sens`: `TAT CA DAT`. `test_demo.js`: `TẤT CẢ OK`.
+- `demo.html`: dựng lại trên máy này cho dự báo XGB khác bản công bố ở một số ngày (36 ngày đổi trạng thái cảnh báo) do khác môi trường chạy (Python 3.12.10 so với 3.12.14, CPU khác); dựng hai lần trên cùng máy cho kết quả giống hệt. Để demo khớp bộ công bố, **giữ nguyên dữ liệu nhúng của bản công bố**, chỉ thay template mới.
+
+## Đợt 6 — đồng nhất tài liệu (23/10/2026)
+
+Chỉ sửa tài liệu, không sửa mã nguồn hoặc kết quả. Thực hiện bằng Claude Code theo yêu cầu người dùng.
+
+- Khối "Cập nhật kết quả ngày 23/10/2026" trước đây được chép y nguyên vào README, SPEC, DATA_CARD và file này. Nay chỉ giữ ở file này; ba file kia trỏ về đây và `results/final/PUBLICATION.md`, để lần sau đổi số không sót chỗ.
+- `SPEC.md`: thêm mục 20 cho `policies.py`/`run_upgrade.py` (v2.9 trước đây chỉ có ở dòng đầu); mục 5 liệt kê đủ cum/cumb/mc; mục 11 sửa mô tả B2+risk (code luôn dùng "cum", không cùng phương pháp với XGB); mục 12 thêm các bảng mới trong `results/final/`; mục 15 ghi hai giới hạn đã biết của đường nhập CSV; mục 18 ghi đúng runtime.
+- `README.md`: thêm `run_upgrade.ps1`, `results_pre_val_precision\`, `publication_backups\` vào cấu trúc thư mục; số file .py 32 → 35; thay đoạn ghi chú chạy lại (TEMP, runtime) bằng một dòng trỏ `PUBLICATION.md`; thêm dòng `policies.py`/`run_upgrade.py` vào bảng.
+- `DATA_CARD.md`: ghi rõ mỗi seed tự sinh lại dữ liệu, `data/daily.csv` chỉ dùng cho hình kiểm tra; thêm hai giới hạn của đường nhập CSV.
+- `requirements.txt`: dòng chú thích ghi đúng hai runtime Python.
+
+## Đợt 5 — đồng bộ kết quả và tài liệu ngày 23/10/2026
+
+Đã kiểm tra SHA256 nguồn và artifact của 12 checkpoint nâng cấp; công bố lại bảng chi phí/CI, bổ sung bảng chính sách và ablation vào results/final, đồng bộ bản tham chiếu. Không huấn luyện lại, không sửa mô hình hoặc ngưỡng demo. Bản cũ được giữ ở publication_backups/20261023_224155. Kiểm tra sau cập nhật: check_expected.py TẤT CẢ ĐẠT; bản tham chiếu khớp SHA256. Script Python phụ dùng một lần đã được xóa theo phản hồi người dùng; không thêm mã chức năng. Các mục đợt 1–4 bên dưới là lịch sử, không mô tả trạng thái hiện hành. ChatGPT/Codex hỗ trợ cập nhật tài liệu và báo cáo.
+
+## Cập nhật kết quả ngày 23/10/2026
+
+Nguồn hiện hành: `results/final/PUBLICATION.md`, `UPGRADE_RESULTS.md`, `policies_mean.csv`, `policies_sd.csv` và các bảng từng seed. Bản tham chiếu được đồng bộ với bộ công bố. Bảng lõi và thí nghiệm nâng cấp có runtime riêng được ghi rõ; không coi chúng là một lần chạy duy nhất.
+
+- Chi phí FP=1, FN=2: ngưỡng chọn trên validation cho chi phí test XGB+risk **24,83**, B2 **26,78** trên 100 điểm quyết định. Bayes 1/3 cho **24,83** (hai số trùng sau làm tròn, không bằng nhau tuyệt đối). Không gọi đây là chi phí tối ưu trên test.
+- FAR20 chọn trên validation: XGB+risk đạt FAR test **19,4%**, Recall chu kỳ **94,4%**; B2 đạt **18,2% / 80,0%**, B1 **19,1% / 72,9%**. Không ép FAR test bằng 20%.
+- CI95% bootstrap ghép cặp theo người được báo từng seed, giữ mô hình/ngưỡng cố định. Mean/SD qua ba seed không phải CI95% chung. F1 của risk so với XGB biên chỉ tăng khoảng 0,0016; CI từng seed chứa 0, chưa chứng minh cải thiện F1 rõ rệt.
+- User-holdout có lịch sử: XGB+risk ở ngưỡng F1 có F1 **0,667**, FAR **67,6%**, **6,78** ngày cảnh báo/chu kỳ bình thường. Với chi phí r=2 chọn trên val: **0,696 / 51,9% / 5,13 ngày**; Bayes r=2: **0,700 / 46,3% / 4,15 ngày**; FAR20-val: **0,665 / 19,4% / 1,38 ngày**, Recall chu kỳ **93,9%**. Đây là các chính sách định trước, không chọn người thắng trên test.
+- Ablation ba seed: MAE chi tiêu đầy đủ **108.581 VND**, bỏ lịch sử cá nhân **108.578 VND**, bỏ nhóm lịch/thống kê gần đây **120.280 VND** (+10,8%). Bỏ lịch sử cá nhân tăng MAE số dư khoảng 2,2%. SHAP cao không chứng minh nhóm đặc trưng là không thể thay thế; chưa xác định đặc trưng nào thay thế nó.
+- CSV mặc định từ chối ô lỗi/ngày thiếu/số dư thiếu. Chỉ điền khi chọn `missing_policy=zero` hoặc `balance_policy=ffill`; lưu dấu vết trong `attrs["quality"]` và metadata demo. Điền dữ liệu là giả định, không phải phục hồi giao dịch thực.
+- Test đã được xem khi phát triển. Các kết quả này chưa chứng minh cold start không có lịch sử, hiệu quả ngoài simulator hay tác động hành vi người dùng.
+
 
 ## Đợt 4 — nâng cấp đánh giá và chất lượng dữ liệu (23/10/2026)
 
@@ -15,13 +57,21 @@ Các thay đổi mã nguồn và phân tích của đợt này được ChatGPT/
 - Kết quả nâng cấp nằm riêng trong `results/upgrades/`; bộ `results/final/` và `ket_qua_tham_chieu/` vẫn là kết quả chốt trước đợt này. File báo cáo cuối kỳ DOCX không được chỉnh sửa.
 - Runtime lần nâng cấp được ghi bằng phiên bản thực trong `results/upgrades/runtime_packages.json` và từng `complete.json`; không giả định khớp toàn bộ phiên bản cũ.
 
-- **Đợt 2 (22–23/10/2026):** ghim phiên bản thư viện, thêm KS, so sánh ở cùng Precision, ngưỡng và mất cân bằng lớp, công bằng theo thu nhập, kiểm tra CSV thật, lý do cảnh báo trong demo. Xem ngay bên dưới.
+**Mục lục các đợt** (mới nhất ở trên):
+- **Đợt 8 (24/10/2026):** sửa khai báo AI trong DOCX; bài tự làm cho Người 2 trong `docs/`. Xem đầu file.
+- **Đợt 7 (23/10/2026):** sửa R-1 đến R-4 (thiếu lịch sử, số dư tăng giữa kỳ, giải thích trong demo, docstring). Xem đầu file.
+- **Đợt 6 (23/10/2026):** đồng nhất tài liệu. Xem đầu file.
+- **Đợt 5 (23/10/2026):** công bố lại bảng chi phí, CI, chính sách, ablation vào `results/final/`. Xem đầu file.
+- **Đợt 4 (23/10/2026):** chính sách ngưỡng chọn trên validation, CI từng seed, ablation, chính sách nhập CSV tường minh. Xem đầu file.
 - **Đợt 3 (23/10/2026):** chọn ngưỡng so sánh cùng Precision trên validation và chỉ đo trên test; thêm đánh giá phụ giữ riêng người dùng; ghi rõ giới hạn dữ liệu mô phỏng. Xem mục dưới.
+- **Đợt 2 (22–23/10/2026):** ghim phiên bản thư viện, thêm KS, so sánh ở cùng Precision, ngưỡng và mất cân bằng lớp, công bằng theo thu nhập, kiểm tra CSV thật, lý do cảnh báo trong demo. Xem sau Đợt 3.
 - **Đợt 1 (22/10/2026):** phân tích lỗi và lý do cảnh báo (SHAP). Xem phần "Đợt 1" ở cuối file.
 
 ---
 
 # Đợt 3 (23/10/2026)
+
+Công cụ: ChatGPT/Codex hỗ trợ theo yêu cầu người dùng (ghi nhận theo báo cáo cuối kỳ §6; bản gốc của mục này không ghi công cụ).
 
 ## 1. Sửa quy trình chọn ngưỡng cùng Precision
 
@@ -58,30 +108,32 @@ User-holdout: nhóm test gồm 60 người mô phỏng, tách khỏi train/calib
 
 # Đợt 2 (22–23/10/2026)
 
+Công cụ: Claude (Claude Code) thực hiện theo yêu cầu người dùng.
+
 Mục đích: lấp các chỗ hở về code mà thang điểm cuối kỳ và báo cáo giữa kỳ đòi hỏi, rồi chạy lại toàn bộ để có **một bộ số chính thức duy nhất**. Logic mô hình, nhãn và cách chia tập không đổi, chỉ thêm chỉ số, bảng và kiểm tra.
 
 ## 1. Đổi gì và vì sao
 
-| # | Việc | File | Vì sao |
-|---|---|---|---|
-| a | Ghim phiên bản thư viện; `run_all.ps1`, `run_extras.ps1` cài bằng `pip install -r requirements.txt` | `requirements.txt` (mới), `run_all.ps1`, `run_extras.ps1` | Đợt 1 phát hiện các dòng XGB lệch nhẹ khi chạy với phiên bản xgboost khác (F1 0,702 → 0,703). Ghim phiên bản thì ai chạy lại cũng ra đúng bộ số trên slide. |
-| b | Thêm **KS** (= max(TPR − FPR)) vào `rank_metrics`; KS có trong bảng Q2 | `evaluate.py`, `run_risk.py`, `make_report.py` | KS là chỉ số quen thuộc khi đánh giá điểm rủi ro tài chính. Hội đồng có thể hỏi, và có thêm cũng không mất gì. |
-| c | **So sánh ở cùng Precision với B1** (hàm `lead_at_precision`): đặt ngưỡng của từng mô hình sao cho Precision bằng B1, rồi so Recall và số ngày báo trước. Đầu ra: `Prec_table.csv` và một mục trong `RESULTS.md` | `evaluate.py`, `run_risk.py`, `make_report.py` | Báo cáo giữa kỳ cam kết tiêu chí "ở mức Precision tương đương, Recall cao hơn hoặc báo sớm hơn B1". Trước đây code chỉ so ở cùng mức báo nhầm, chưa đúng câu chữ đó. Thang điểm trừ điểm nếu lệch giữa kỳ mà không giải thích. |
-| d | **Mất cân bằng lớp:** tỉ lệ thiếu tiền ở từng tập, và cùng một p với 3 cách đặt ngưỡng (p* chọn trên val, 0,5, tỉ lệ nền) | `supplement.py` (mới) | Thang điểm hỏi cách xử lý mất cân bằng lớp. Mô hình chính là hồi quy chi tiêu nên không có trọng số lớp; mất cân bằng chỉ tác động ở bước đặt ngưỡng. Bảng này chứng minh điều đó và trả lời luôn câu hỏi về "mệt mỏi vì cảnh báo". |
-| e | **Công bằng theo mức thu nhập:** chia 3 mức thu nhập trong từng loại thu nhập (6 nhóm), so bỏ sót, báo nhầm, AUROC, ECE | `supplement.py` | Thang điểm cộng điểm cho phân tích công bằng. Trước đây chỉ có phân tích theo kiểu chi tiêu và loại thu nhập. Chia mức trong từng loại vì trợ cấp (3–5 triệu) và lương (7–15 triệu) khác nhau hẳn. |
-| f | **Kiểm tra chất lượng CSV thật:** phát hiện ô trống hoặc lỗi, chi âm, ngày thiếu, ngày chi bất thường, số dư thiếu. **Chỉ cảnh báo, không tự sửa**; kết quả lưu trong `df.attrs["quality"]` | `import_real.py`, `test_pipeline.py` | Tiêu chí dữ liệu hỏi về làm sạch, dữ liệu thiếu và ngoại lai. Dữ liệu tài chính của người dùng không nên bị sửa ngầm (ví dụ chi âm có thể là hoàn tiền), nên chỉ báo để người dùng tự xem lại. |
-| g | **Demo có dòng "Vì sao dự báo chi như vậy"**: 3 yếu tố làm tăng và 2 yếu tố làm giảm tổng chi dự báo nhiều nhất, theo SHAP, tính bằng nghìn đồng | `make_demo.py`, `demo_template.html`, `test_demo.js` | Đợt 1 mới có SHAP trong file kết quả, người dùng demo chưa thấy được. Báo cáo giữa kỳ hứa đầu ra dễ hiểu cho người dùng. |
-| — | Thêm `supplement.py` vào `run_all.ps1` | `run_all.ps1` | Để một lệnh chạy ra đủ mọi bảng. |
+| #   | Việc                                                                                                                                                                                                             | File                                                      | Vì sao                                                                                                                                                                                                                              |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| a   | Ghim phiên bản thư viện; `run_all.ps1`, `run_extras.ps1` cài bằng `pip install -r requirements.txt`                                                                                                              | `requirements.txt` (mới), `run_all.ps1`, `run_extras.ps1` | Đợt 1 phát hiện các dòng XGB lệch nhẹ khi chạy với phiên bản xgboost khác (F1 0,702 → 0,703). Ghim phiên bản thì ai chạy lại cũng ra đúng bộ số trên slide.                                                                         |
+| b   | Thêm **KS** (= max(TPR − FPR)) vào `rank_metrics`; KS có trong bảng Q2                                                                                                                                           | `evaluate.py`, `run_risk.py`, `make_report.py`            | KS là chỉ số quen thuộc khi đánh giá điểm rủi ro tài chính. Hội đồng có thể hỏi, và có thêm cũng không mất gì.                                                                                                                      |
+| c   | **So sánh ở cùng Precision với B1** (hàm `lead_at_precision`): đặt ngưỡng của từng mô hình sao cho Precision bằng B1, rồi so Recall và số ngày báo trước. Đầu ra: `Prec_table.csv` và một mục trong `RESULTS.md` | `evaluate.py`, `run_risk.py`, `make_report.py`            | Báo cáo giữa kỳ cam kết tiêu chí "ở mức Precision tương đương, Recall cao hơn hoặc báo sớm hơn B1". Trước đây code chỉ so ở cùng mức báo nhầm, chưa đúng câu chữ đó. Thang điểm trừ điểm nếu lệch giữa kỳ mà không giải thích.      |
+| d   | **Mất cân bằng lớp:** tỉ lệ thiếu tiền ở từng tập, và cùng một p với 3 cách đặt ngưỡng (p* chọn trên val, 0,5, tỉ lệ nền)                                                                                        | `supplement.py` (mới)                                     | Thang điểm hỏi cách xử lý mất cân bằng lớp. Mô hình chính là hồi quy chi tiêu nên không có trọng số lớp; mất cân bằng chỉ tác động ở bước đặt ngưỡng. Bảng này chứng minh điều đó và trả lời luôn câu hỏi về "mệt mỏi vì cảnh báo". |
+| e   | **Công bằng theo mức thu nhập:** chia 3 mức thu nhập trong từng loại thu nhập (6 nhóm), so bỏ sót, báo nhầm, AUROC, ECE                                                                                          | `supplement.py`                                           | Thang điểm cộng điểm cho phân tích công bằng. Trước đây chỉ có phân tích theo kiểu chi tiêu và loại thu nhập. Chia mức trong từng loại vì trợ cấp (3–5 triệu) và lương (7–15 triệu) khác nhau hẳn.                                  |
+| f   | **Kiểm tra chất lượng CSV thật:** phát hiện ô trống hoặc lỗi, chi âm, ngày thiếu, ngày chi bất thường, số dư thiếu. **Chỉ cảnh báo, không tự sửa**; kết quả lưu trong `df.attrs["quality"]`                      | `import_real.py`, `test_pipeline.py`                      | Tiêu chí dữ liệu hỏi về làm sạch, dữ liệu thiếu và ngoại lai. Dữ liệu tài chính của người dùng không nên bị sửa ngầm (ví dụ chi âm có thể là hoàn tiền), nên chỉ báo để người dùng tự xem lại.                                      |
+| g   | **Demo có dòng "Vì sao dự báo chi như vậy"**: 3 yếu tố làm tăng và 2 yếu tố làm giảm tổng chi dự báo nhiều nhất, theo SHAP, tính bằng nghìn đồng                                                                 | `make_demo.py`, `demo_template.html`, `test_demo.js`      | Đợt 1 mới có SHAP trong file kết quả, người dùng demo chưa thấy được. Báo cáo giữa kỳ hứa đầu ra dễ hiểu cho người dùng.                                                                                                            |
+| —   | Thêm `supplement.py` vào `run_all.ps1`                                                                                                                                                                           | `run_all.ps1`                                             | Để một lệnh chạy ra đủ mọi bảng.                                                                                                                                                                                                    |
 
 Logic của simulator, nhãn, mô hình, lớp xác suất giữ nguyên.
 
 **Tài liệu (sau khi chạy xong):**
 
-| File | Sửa gì | Vì sao |
-|---|---|---|
-| `SPEC.md` → v2.7 | Mục 5 đổi "cum" thành "cumb" (nhóm tự sửa). Thêm KS vào mục 6c. Thêm mục 6e (so ở cùng Precision). Thêm kiểm tra CSV và dòng "Vì sao" vào mục 15. Thêm mục 18 (phân tích lỗi, SHAP, mất cân bằng lớp, công bằng, `requirements.txt`). Mục 12 hết liệt kê cứng `fig1..fig6`. | SPEC quy định mọi thay đổi phải báo cả nhóm. Dòng "cum" sai so với kết quả chạy chính thức. |
-| `README.md` | Thêm `requirements.txt`, cờ `-SkipInstall` và `-BrowserTest`, mục "Kết quả" (`results\final\`, cách đổi tên `results_cu_*`). Thêm `supplement.py` và `Prec_table.csv`. Sửa số file `.py` từ 24 thành 30, thời gian chạy thành 15–35 phút tùy máy. | Người nhận gói zip cần biết số chính thức nằm ở đâu và cách chạy ra đúng số đó. |
-| `ket_qua_tham_chieu\` | Thay bằng bản sao `results\final\` của lần chạy chính thức (44 file). Bản cũ đổi tên thành `ket_qua_tham_chieu_goc\`. | Có `requirements.txt` rồi thì bản đối chiếu nên khớp từng số với slide. Không script nào đọc thư mục này. |
+| File                  | Sửa gì                                                                                                                                                                                                                                                                      | Vì sao                                                                                                    |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `SPEC.md` → v2.7      | Mục 5 đổi "cum" thành "cumb" (nhóm tự sửa). Thêm KS vào mục 6c. Thêm mục 6e (so ở cùng Precision). Thêm kiểm tra CSV và dòng "Vì sao" vào mục 15. Thêm mục 18 (phân tích lỗi, SHAP, mất cân bằng lớp, công bằng, `requirements.txt`). Mục 12 hết liệt kê cứng `fig1..fig6`. | SPEC quy định mọi thay đổi phải báo cả nhóm. Dòng "cum" sai so với kết quả chạy chính thức.               |
+| `README.md`           | Thêm `requirements.txt`, cờ `-SkipInstall` và `-BrowserTest`, mục "Kết quả" (`results\final\`, cách đổi tên `results_cu_*`). Thêm `supplement.py` và `Prec_table.csv`. Sửa số file `.py` từ 24 thành 30, thời gian chạy thành 15–35 phút tùy máy.                           | Người nhận gói zip cần biết số chính thức nằm ở đâu và cách chạy ra đúng số đó.                           |
+| `ket_qua_tham_chieu\` | Thay bằng bản sao `results\final\` của lần chạy chính thức (44 file). Bản cũ đổi tên thành `ket_qua_tham_chieu_goc\`.                                                                                                                                                       | Có `requirements.txt` rồi thì bản đối chiếu nên khớp từng số với slide. Không script nào đọc thư mục này. |
 
 ## 2. Đã kiểm tra
 
@@ -135,18 +187,18 @@ Không sửa logic của file nào đã có. Bản sao lưu trước khi sửa: 
 
 ## 1. File thêm mới
 
-| File | Việc | Đầu ra (trong `results\final\`) |
-|---|---|---|
-| `cashflow_risks\error_cases.py` | Phân tích lỗi ở mức chu kỳ của XGB + p > p* (so với B2) trên test, 3 seed. Thống kê theo kiểu chi tiêu và loại thu nhập. Chọn 2 ví dụ theo quy tắc cố định. | `ERROR_ANALYSIS.md`, `error_summary.csv`, `error_by_group.csv`, `error_cases.csv`, `fig11_error_cases.png` |
-| `cashflow_risks\explain.py` | Lý do cảnh báo bằng SHAP. Dùng TreeSHAP có sẵn trong XGBoost (`pred_contribs=True`), **không cài thêm thư viện**. Viết một câu lý do cho mọi điểm test có cảnh báo, và giải thích 2 ví dụ của `error_cases.py`. | `explain_alerts_seed1.csv`, `explain_global_seed1.csv`, `explain_cases.csv`, `fig12_explain.png` |
-| `THAY_DOI.md` | File này | |
+| File                            | Việc                                                                                                                                                                                                            | Đầu ra (trong `results\final\`)                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `cashflow_risks\error_cases.py` | Phân tích lỗi ở mức chu kỳ của XGB + p > p* (so với B2) trên test, 3 seed. Thống kê theo kiểu chi tiêu và loại thu nhập. Chọn 2 ví dụ theo quy tắc cố định.                                                     | `ERROR_ANALYSIS.md`, `error_summary.csv`, `error_by_group.csv`, `error_cases.csv`, `fig11_error_cases.png` |
+| `cashflow_risks\explain.py`     | Lý do cảnh báo bằng SHAP. Dùng TreeSHAP có sẵn trong XGBoost (`pred_contribs=True`), **không cài thêm thư viện**. Viết một câu lý do cho mọi điểm test có cảnh báo, và giải thích 2 ví dụ của `error_cases.py`. | `explain_alerts_seed1.csv`, `explain_global_seed1.csv`, `explain_cases.csv`, `fig12_explain.png`           |
+| `THAY_DOI.md`                   | File này                                                                                                                                                                                                        |                                                                                                            |
 
 ## 2. File sửa
 
-| File | Sửa gì |
-|---|---|
+| File          | Sửa gì                                                                                                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `run_all.ps1` | Thêm `error_cases` và `explain` vào danh sách file bắt buộc. Thêm 2 lệnh chạy ngay sau `summarize_extra.py` (sau `make_report.py`, trước `check_expected.py`). |
-| `README.md` | Thêm bảng "Phân tích lỗi và lý do cảnh báo". |
+| `README.md`   | Thêm bảng "Phân tích lỗi và lý do cảnh báo".                                                                                                                   |
 
 Các file `.py` cũ, SPEC.md, `ket_qua_tham_chieu\` và `demo.html` giữ nguyên.
 
@@ -172,13 +224,13 @@ Các file `.py` cũ, SPEC.md, `ket_qua_tham_chieu\` và `demo.html` giữ nguyê
 - Đã mở xem `fig11` và `fig12`, cả hai đọc được.
 - Phiên bản thư viện khi chạy:
 
-  | Thư viện | Phiên bản |
-  |---|---|
-  | Python | 3.12.10 |
-  | xgboost | 3.4.1 |
-  | pandas | 3.0.6 |
-  | numpy | 2.4.5 |
-  | scikit-learn | 1.9.1 |
+  | Thư viện     | Phiên bản |
+  | ------------ | --------- |
+  | Python       | 3.12.10   |
+  | xgboost      | 3.4.1     |
+  | pandas       | 3.0.6     |
+  | numpy        | 2.4.5     |
+  | scikit-learn | 1.9.1     |
 
 ## 5. Lưu ý về số liệu
 
@@ -186,12 +238,12 @@ Các file `.py` cũ, SPEC.md, `ket_qua_tham_chieu\` và `demo.html` giữ nguyê
 - Các dòng B1 và B2 giống hệt.
 - Các dòng XGB lệch nhẹ (nhiều khả năng do khác phiên bản xgboost):
 
-  | Chỉ số | Tham chiếu | Chạy lại |
-  |---|---|---|
-  | XGB + p > p*, F1 | 0,702 | 0,703 |
-  | XGB + p > p*, tỉ lệ chu kỳ bị báo nhầm | 0,423 | 0,420 |
-  | XGB theo biên m, F1 | 0,701 | 0,698 |
-  | XGB + p > p* (k=2), F1 | 0,683 | 0,687 |
+  | Chỉ số                                 | Tham chiếu | Chạy lại |
+  | -------------------------------------- | ---------- | -------- |
+  | XGB + p > p*, F1                       | 0,702      | 0,703    |
+  | XGB + p > p*, tỉ lệ chu kỳ bị báo nhầm | 0,423      | 0,420    |
+  | XGB theo biên m, F1                    | 0,701      | 0,698    |
+  | XGB + p > p* (k=2), F1                 | 0,683      | 0,687    |
 
 - `plan.pdf` lại trích một bộ số thứ ba (0,442; 0,66; 0,686).
 
@@ -201,10 +253,10 @@ Các file `.py` cũ, SPEC.md, `ket_qua_tham_chieu\` và `demo.html` giữ nguyê
 
 **Lỗi gần như toàn là báo nhầm**
 
-| Chỉ số | XGB + p > p* | B2 |
-|---|---|---|
+| Chỉ số                               | XGB + p > p*  | B2            |
+| ------------------------------------ | ------------- | ------------- |
 | Tỉ lệ chu kỳ bình thường bị báo nhầm | 0,420 ± 0,031 | 0,397 ± 0,058 |
-| Tỉ lệ chu kỳ thiếu tiền bị bỏ sót | 0,019 ± 0,011 | 0,033 ± 0,018 |
+| Tỉ lệ chu kỳ thiếu tiền bị bỏ sót    | 0,019 ± 0,011 | 0,033 ± 0,018 |
 
 **Báo nhầm có cấu trúc rõ**
 - 17% chu kỳ bị báo nhầm là "suýt thiếu". Ở các chu kỳ bình thường không bị cảnh báo, tỉ lệ này chỉ 1,6%.
@@ -228,15 +280,15 @@ Các file `.py` cũ, SPEC.md, `ket_qua_tham_chieu\` và `demo.html` giữ nguyê
 
 ## 7. Chưa làm (còn lại trong `plan.pdf`)
 
-| Mục | Việc |
-|---|---|
-| 1 | Slide khả năng áp dụng |
-| 2 | Khai báo AI (cần ghi rằng hai script này do Claude viết theo yêu cầu, nhóm đã kiểm tra) |
-| 3 | Dẫn chiếu Coreach |
-| 4 | Slide giới hạn dữ liệu |
-| 5 | Câu về mất cân bằng lớp, giải thích vì sao chọn XGB thay vì Ridge |
-| 7 | Slide bài toán |
-| 8 | Phân vai, chuẩn bị phản biện |
+| Mục | Việc                                                                                    |
+| --- | --------------------------------------------------------------------------------------- |
+| 1   | Slide khả năng áp dụng                                                                  |
+| 2   | Khai báo AI (cần ghi rằng hai script này do Claude viết theo yêu cầu, nhóm đã kiểm tra) |
+| 3   | Dẫn chiếu Coreach                                                                       |
+| 4   | Slide giới hạn dữ liệu                                                                  |
+| 5   | Câu về mất cân bằng lớp, giải thích vì sao chọn XGB thay vì Ridge                       |
+| 7   | Slide bài toán                                                                          |
+| 8   | Phân vai, chuẩn bị phản biện                                                            |
 
 ## 8. Ghi chú khác
 

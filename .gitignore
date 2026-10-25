@@ -3,6 +3,7 @@
 *.pdf
 SLIDE_NHAP.md
 .document_update_*/
+data/
 
 # Tệp tạm của các lần chạy
 .pipeline_tmp/

@@ -131,6 +131,10 @@ def main():
         source = "Dữ liệu: tệp CSV của nhóm. Mô hình huấn luyện trên dữ liệu mô phỏng, chưa kiểm chứng trên dữ liệu thật."
         if imported.attrs["quality"]["imputation_assumption"]:
             source += " Có dữ liệu thiếu được điền theo chính sách đã chọn; dự báo phụ thuộc giả định điền dữ liệu."
+        q = imported.attrs["quality"]
+        if q.get("vi_pham_so_du_chi_giam"):
+            source += (f" Dữ liệu có {q['thu_nhap_giua_ky']} khoản tiền vào giữa chu kỳ và {q['chi_am_sau_ngay_nhan_dau']} ngày chi âm;"
+                       " mô hình giả định giữa kỳ không có tiền vào, nên xác suất có thể cao hơn thực tế và ngày cạn tiền có thể sai.")
     else:
         dfT, dpT = S["df"], S["test"]
         meta = pick_sim_users(S, a.per_pattern)

@@ -1,4 +1,4 @@
-# Phiên bản đã dùng để tạo bộ số liệu chính thức trong results\ (Python 3.12.10).
+# Phiên bản thư viện đã dùng để tạo bộ số liệu chính thức (bộ đầu chạy Python 3.12.10, bảng lõi chốt chạy Python 3.12.14; runtime từng lần ghi trong THAY_DOI.md).
 # Khác phiên bản xgboost có thể làm số của các dòng XGB lệch nhẹ (B1/B2 không đổi), xem THAY_DOI.md.
 numpy==2.4.5
 pandas==3.0.6

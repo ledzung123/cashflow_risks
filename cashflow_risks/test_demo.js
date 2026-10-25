@@ -18,7 +18,7 @@ ok(d.querySelectorAll('#chart svg path').length >= 1, 'biểu đồ có đườn
 ok(d.getElementById('verdict').textContent.length > 10, 'có câu kết luận: ' + d.getElementById('verdict').textContent);
 
 // duyệt mọi người dùng, chu kỳ, ngày: không lỗi, không NaN/undefined, kết luận khớp dữ liệu
-let n = 0, bad = 0;
+let n = 0, bad = 0, nNoHit = 0;
 const sel = d.getElementById('selUser'), selC = d.getElementById('selCycle');
 DATA.users.forEach((u, ui) => {
   sel.value = String(ui); sel.dispatchEvent(new w.Event('change'));
@@ -34,6 +34,12 @@ DATA.users.forEach((u, ui) => {
         const pcts = Math.round(day.p * 100) + '%';
         const expect = day.al ? v.startsWith('Có nguy cơ') : v.startsWith('Tạm an toàn');
         if (!expect || !v.includes(pcts)) { bad++; if (bad < 4) console.log('  kết luận lệch dữ liệu', u.label, ci, day.t, v); }
+        // cảnh báo theo xác suất nhưng đường dự báo trung bình không chạm θ -> phải có câu giải thích (tính độc lập từ dữ liệu)
+        let path = day.b, hits = false;
+        for (const s of day.y) { path -= s; if (path < cy.theta) { hits = true; break; } }
+        const explained = /chưa chạm ngưỡng/.test(v);
+        if (explained !== (day.al === 1 && !hits)) { bad++; if (bad < 4) console.log('  giải thích "chưa chạm ngưỡng" lệch dữ liệu', u.label, ci, day.t, v); }
+        if (day.al === 1 && !hits) nNoHit++;
         const hasWhy = day.w && (day.w.up.length + day.w.down.length) > 0;
         const firstUp = hasWhy && day.w.up.length ? day.w.up[0][0] : null;
         if (hasWhy !== /Vì sao/.test(why) || (firstUp && !why.includes(firstUp))) { bad++; if (bad < 4) console.log('  lý do (SHAP) lệch dữ liệu', u.label, ci, day.t, why); }
@@ -41,7 +47,7 @@ DATA.users.forEach((u, ui) => {
     });
   });
 });
-ok(bad === 0, 'duyệt ' + n + ' ngày-chu kỳ: không NaN/undefined, kết luận khớp dữ liệu');
+ok(bad === 0, 'duyệt ' + n + ' ngày-chu kỳ: không NaN/undefined, kết luận khớp dữ liệu (' + nNoHit + ' ngày cảnh báo dù dự báo trung bình chưa chạm θ, đều có giải thích)');
 
 // tương tác: bấm ô, phím mũi tên, hiện kết quả thật
 sel.value = '0'; sel.dispatchEvent(new w.Event('change'));

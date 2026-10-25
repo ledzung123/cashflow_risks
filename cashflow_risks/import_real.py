@@ -110,6 +110,14 @@ def load_user_csv(src, initial_balance=0.0, income_min_ratio=0.5, user_id=0,
         raise ValueError("Cần ít nhất 3 lần nhận thu nhập (2 chu kỳ đầy đủ). Hãy thêm dữ liệu hoặc giảm income_min_ratio.")
     d["is_start"] = start
     d = d.loc[d.index[d["is_start"]][0]:].reset_index(drop=True)              # bỏ các ngày trước lần nhận tiền đầu tiên
+    # Mô hình giả định giữa chu kỳ không có tiền vào nên số dư chỉ giảm (SPEC mục 1). Khoản thu phụ và chi âm (hoàn tiền)
+    # làm số dư tăng giữa kỳ: nhãn có thể sai và p bỏ qua khoản thu tương lai. Chỉ cảnh báo, không sửa.
+    q["thu_nhap_giua_ky"] = int(((d["income"] > 0) & ~d["is_start"]).sum())
+    q["chi_am_sau_ngay_nhan_dau"] = int((d["spend"] < 0).sum())
+    q["vi_pham_so_du_chi_giam"] = bool(q["thu_nhap_giua_ky"] or q["chi_am_sau_ngay_nhan_dau"])
+    if q["vi_pham_so_du_chi_giam"]:
+        warnings.warn(f"Chất lượng dữ liệu: {q['thu_nhap_giua_ky']} ngày có tiền vào giữa chu kỳ và {q['chi_am_sau_ngay_nhan_dau']} "
+                      "ngày chi âm. Mô hình giả định số dư chỉ giảm giữa chu kỳ, nên nhãn và xác suất có thể sai.", stacklevel=2)
     d["cycle_id"] = d["is_start"].cumsum() - 1
     d = d[d["cycle_id"] < d["cycle_id"].max()].copy()                         # bỏ chu kỳ cuối (chưa biết ngày nhận kế tiếp)
     d["day_in_cycle"] = d.groupby("cycle_id").cumcount() + 1
