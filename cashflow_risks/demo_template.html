@@ -36,6 +36,7 @@ select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--rule
 .check{flex-direction:row!important;align-items:center;gap:8px!important;color:var(--ink)!important;padding-bottom:8px}
 select:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--balance);outline-offset:2px}
 .hint{color:var(--muted);font-size:.92rem;max-width:72ch;margin-bottom:12px}
+.policy-note{color:var(--balance);font-size:.91rem;margin:10px 0 0;max-width:78ch}
 #strip{display:flex;flex-wrap:wrap;gap:4px}
 .cell{width:calc((100% - 4px*(var(--n) - 1))/var(--n));min-width:28px;height:52px;border:1px solid transparent;border-radius:2px;padding:0;cursor:pointer;
   font:600 .8rem var(--sans);color:var(--ink);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;background:var(--low)}
@@ -84,9 +85,10 @@ td.yes{color:var(--risk);font-weight:600} td.no{color:var(--safe);font-weight:60
   <label class="check"><input type="checkbox" id="reveal"> Hiện kết quả thật của chu kỳ</label>
 </div>
 <p class="hint" id="userNote" style="margin-top:10px"></p>
+<p class="policy-note" id="policyNote"></p>
 
 <section aria-labelledby="h-strip">
-  <h2 id="h-strip">Rủi ro theo từng ngày của chu kỳ</h2>
+  <h2 id="h-strip">Rủi ro và cảnh báo FAR20 theo từng ngày</h2>
   <p class="hint">Mỗi ô là một ngày. Màu càng đậm thì khả năng thiếu tiền càng cao, ô có viền đen là ngày hệ thống cảnh báo. Bấm vào ô hoặc dùng phím mũi tên trái và phải để đổi ngày.</p>
   <div id="strip" role="group" aria-label="Rủi ro từng ngày"></div>
   <div class="legend">
@@ -117,7 +119,7 @@ td.yes{color:var(--risk);font-weight:600} td.no{color:var(--safe);font-weight:60
 
 <section aria-labelledby="h-scenario">
   <h2 id="h-scenario">Tự nhập một tình huống thu chi</h2>
-  <p class="hint">Nhập số tiền bằng VND rồi bấm “Xem kết quả”. Đây là phép tính tình huống theo mức chi bạn chọn, không phải xác suất từ XGBoost.</p>
+  <p class="hint">Nhập số tiền bằng VND rồi bấm “Xem kết quả”. Đây là phép tính tình huống theo mức chi bạn chọn; không chạy XGBoost hoặc chính sách FAR20.</p>
   <form id="scenarioForm" novalidate>
     <div class="scenario-grid">
       <label>Số dư hiện tại (VND)<small>Số tiền đang có trong tài khoản.</small><input id="scBalance" type="number" min="0" step="1000" value="3500000" required></label>
@@ -315,6 +317,9 @@ function renderScenario(){
 
 function init(){
   $("source").textContent = DATA.meta.source;
+  $("policyNote").textContent = DATA.meta.policy==="far20_val"
+    ? "Các chu kỳ có sẵn dùng FAR20: cảnh báo khi p > τ = " + String(DATA.meta.tau).replace(".", ",") + " (" + (100*DATA.meta.tau).toFixed(1).replace(".", ",") + "%). Ngưỡng chọn trên validation để không quá 20% chu kỳ bình thường bị báo nhầm; tỷ lệ trên test có thể khác."
+    : "Chính sách cảnh báo của dữ liệu nhúng chưa được xác định.";
   fillUsers(); fillCycles(); S.t = defaultDay(); render();
   $("selUser").addEventListener("change", e=>{ S.u=+e.target.value; S.c=0; fillCycles(); S.t=defaultDay(); render(); });
   $("selCycle").addEventListener("change", e=>{ S.c=+e.target.value; S.t=defaultDay(); render(); });

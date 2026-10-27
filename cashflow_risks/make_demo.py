@@ -16,14 +16,14 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(__file__))
 import simulate
-from baselines import alert_by_margin, predict_spend_b1, predict_spend_b2, projected_end_balance, tune_margin
-from evaluate import evaluate
+from baselines import alert_by_margin, margin_score, predict_spend_b1, predict_spend_b2, projected_end_balance
 from explain import LABEL, contributions
 from features import FEATURES
 from import_real import load_user_csv
 from labels import make_dp, prepare_df
 from model_xgb import XGBForecaster
-from risk import bigdays, cum_pool, cum_prob, tune_pstar, volatility
+from policies import select_far_threshold
+from risk import bigdays, cum_pool, cum_prob, volatility
 
 NOTE_PATTERN = {"even": "chi đều mỗi ngày", "front": "hay dồn chi vào đầu chu kỳ",
                 "weekend": "chi nhiều hơn vào cuối tuần", "spike": "thỉnh thoảng có khoản chi lớn bất thường"}
@@ -40,9 +40,11 @@ def train_system(seed, users):
     yc, yv = fc.predict_spend(df, calib), fc.predict_spend(df, val)
     pool = cum_pool(calib, yc, df, volatility(df, calib)[1], bigdays(df, calib))      # phân phối sai số dựng trên calib
     p_val = cum_prob(pool, val, yv, volatility(df, val)[1], bigdays(df, val))
-    tau, _ = tune_pstar(val, p_val, evaluate)                                         # tau chọn trên val
-    m1, _ = tune_margin(val, predict_spend_b1(df, val), evaluate)
-    m2, _ = tune_margin(val, predict_spend_b2(df, val), evaluate)
+    # Chính sách vận hành FAR20 (xem FAR20_GIAI_THICH.md): mọi ngưỡng chọn trên val sao cho <= 20% chu kỳ bình thường bị báo nhầm.
+    # Biên B1/B2: cảnh báo theo biên m <=> margin_score > -m, nên m = -ngưỡng FAR20 trên margin_score.
+    tau = select_far_threshold(val, p_val)
+    m1 = -select_far_threshold(val, margin_score(val, predict_spend_b1(df, val)))
+    m2 = -select_far_threshold(val, margin_score(val, predict_spend_b2(df, val)))
     return dict(df=df, dp=dp, fc=fc, pool=pool, tau=tau, m1=m1, m2=m2, test=test)
 
 
@@ -141,7 +143,7 @@ def main():
         source = f"Dữ liệu: hệ thống được huấn luyện trên {a.users} người dùng mô phỏng; trang hiển thị {len(meta)} người, ở các chu kỳ mô hình chưa từng thấy khi huấn luyện."
     dpT = dpT.reset_index(drop=True)
     users = assemble(S, dfT, dpT, meta)
-    data = {"meta": {"tau": round(float(S["tau"]), 3), "source": source,
+    data = {"meta": {"tau": round(float(S["tau"]), 3), "policy": "far20_val", "source": source,
                      "limit": "Giới hạn: đây là bản minh họa, không phải lời khuyên tài chính. Nhánh MoneyData kiểm tra bổ sung trên một tài khoản thật nhưng lớp cảnh báo báo gần như mọi chu kỳ; hiệu quả cảnh báo trên dữ liệu thật chưa được xác nhận."},
             "users": users, "data_quality": imported.attrs["quality"] if imported is not None else None}
     tpl = open(os.path.join(os.path.dirname(__file__), "demo_template.html"), encoding="utf-8").read()

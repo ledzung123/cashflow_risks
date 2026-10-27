@@ -6,6 +6,7 @@ const html = fs.readFileSync(process.argv[2] || 'demo.html', 'utf8');
 const script = html.match(/<script>([\s\S]*?)<\/script>/);
 assert(script, 'thiếu script demo');
 new vm.Script(script[1]);
+assert(html.includes('"policy":"far20_val"') && html.includes('id="policyNote"'), 'demo phải ghi đúng chính sách FAR20');
 assert(/id="scenarioResult"[^>]*hidden/.test(html), 'kết quả phải ẩn trước khi gửi');
 assert(script[1].includes('scenarioForm").addEventListener("submit"'), 'chỉ tính khi gửi biểu mẫu');
 const start = script[1].indexOf('function renderScenario(){');

@@ -35,6 +35,8 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 `demo.html` có thêm mục tự nhập số dư, số ngày đến kỳ nhận, mức chi mỗi ngày và khoản thu/chi phát sinh. Từng trường có giải thích; kết quả chỉ hiện sau khi bấm **Xem kết quả** và sẽ ẩn nếu sửa dữ liệu. Mục này chỉ tính số dư dự kiến trong trình duyệt, không chạy XGBoost hay tạo xác suất rủi ro cho một người mới. Phần 20 người mô phỏng ở đầu trang vẫn là kết quả XGBoost+risk đã tính trước. Kiểm tra nhanh bằng `node cashflow_risks/test_scenario.js demo.html`.
 
+Các chu kỳ mô phỏng có sẵn hiện dùng **FAR20**: chọn ngưỡng trên validation để không quá 20% chu kỳ bình thường bị báo nhầm tại tập đó. Demo seed 1 có τ = 0,527; FAR trên test không bị ép bằng 20%. Quy tắc và đánh đổi với ngưỡng F1 được giải thích trong `FAR20_GIAI_THICH.md`. Phần tự nhập vẫn chỉ là phép tính tình huống, không áp dụng FAR20.
+
 ## Kết quả
 - Kết quả nằm trong `results\`, bảng và hình cho báo cáo nằm trong `results\final\` (bắt đầu đọc từ `RESULTS.md`).
 - Đánh giá phụ trên người dùng giữ riêng nằm trong `results\user_holdout\USER_HOLDOUT.md`; xem thêm giới hạn trong `DATA_CARD.md`.
