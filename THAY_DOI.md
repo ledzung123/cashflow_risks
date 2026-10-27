@@ -1,9 +1,14 @@
 # Nhật ký thay đổi
+## Đồng bộ demo FAR20 và form tự nhập (28/10/2026)
+
+- Cập nhật `make_demo.py` chọn τ của XGB+risk và biên B1/B2 bằng `select_far_threshold` trên validation. Dùng dữ liệu nhúng FAR20 seed 1 từ bản dự án mới (τ = 0,527; 20 người, 80 chu kỳ), thay giao diện có nút **Xem kết quả** và chú giải từng trường. Dữ liệu dự báo nhúng không huấn luyện lại trong lượt này.
+- Phần nhập thử chỉ tính số dư từ các số người xem nhập; không áp dụng FAR20 hoặc tạo xác suất cho người mới. Mục chu kỳ có sẵn hiển thị rõ FAR20 và nói tỷ lệ báo nhầm test có thể khác 20%. Bỏ footer dài.
+
 ## Demo tự nhập tình huống thu chi (27/10/2026)
 
 - Theo góp ý giao diện: giải thích từng trường, chỉ tính khi bấm **Xem kết quả**, ẩn kết quả cũ khi sửa dữ liệu và bỏ đoạn footer dài.
 - Giữ nguyên các chu kỳ mô phỏng đã tính trước. Thêm phần tự nhập thu/chi tính số dư ngay trên trình duyệt; phần này không tạo xác suất XGBoost cho người mới.
-- Demo ghi rõ τ là p* tối đa F1 của phần chu kỳ có sẵn, khác chính sách Q2 có đệm Precision +0,03. Câu giới hạn MoneyData nêu kết quả cảnh báo gần như mọi chu kỳ trên tài khoản thật.
+- Ở bản 27/10, demo dùng p* tối đa F1. Bản 28/10 chuyển phần chu kỳ có sẵn sang FAR20; phép kiểm Q2 vẫn dùng ngưỡng F1 riêng. Câu giới hạn MoneyData nêu kết quả cảnh báo gần như mọi chu kỳ trên tài khoản thật.
 
 ## Đợt 7 — sửa các lỗi đã xác nhận (23/10/2026)
 
