@@ -1,6 +1,7 @@
 # Nhật ký thay đổi
 ## Demo tự nhập tình huống thu chi (27/10/2026)
 
+- Theo góp ý giao diện: giải thích từng trường, chỉ tính khi bấm **Xem kết quả**, ẩn kết quả cũ khi sửa dữ liệu và bỏ đoạn footer dài.
 - Giữ nguyên các chu kỳ mô phỏng đã tính trước. Thêm phần tự nhập thu/chi tính số dư ngay trên trình duyệt; phần này không tạo xác suất XGBoost cho người mới.
 - Demo ghi rõ τ là p* tối đa F1 của phần chu kỳ có sẵn, khác chính sách Q2 có đệm Precision +0,03. Câu giới hạn MoneyData nêu kết quả cảnh báo gần như mọi chu kỳ trên tài khoản thật.
 

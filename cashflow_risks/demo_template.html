@@ -26,11 +26,13 @@ select{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--rule
 .scenario-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
 .scenario-grid label{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
 .scenario-grid input{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:3px;padding:7px 10px;width:100%}
+.scenario-grid small{font-size:.82rem;line-height:1.35;color:var(--muted)}
+.scenario-submit{font:600 .95rem var(--sans);color:#fff;background:var(--balance);border:0;border-radius:3px;padding:10px 20px;cursor:pointer}
+.scenario-submit:hover{background:#164c70}
 .scenario-output{background:#fff;border:1px solid var(--rule);padding:16px 18px;margin-top:12px}
 .scenario-output strong{font:600 1.25rem/1.3 var(--serif)}
 .scenario-output p+p{margin-top:6px}
 .scenario-output .risk{color:var(--risk)} .scenario-output .safe{color:var(--safe)}
-.scenario-note{font-size:.9rem;color:var(--muted);margin-top:10px;max-width:78ch}
 .check{flex-direction:row!important;align-items:center;gap:8px!important;color:var(--ink)!important;padding-bottom:8px}
 select:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--balance);outline-offset:2px}
 .hint{color:var(--muted);font-size:.92rem;max-width:72ch;margin-bottom:12px}
@@ -60,8 +62,6 @@ table{border-collapse:collapse;width:100%;font-size:.95rem}
 th,td{text-align:left;padding:9px 12px 9px 0;border-bottom:1px solid var(--rule);vertical-align:top}
 th{font-weight:600;color:var(--muted);font-size:.88rem}
 td.yes{color:var(--risk);font-weight:600} td.no{color:var(--safe);font-weight:600}
-footer{margin-top:38px;color:var(--muted);font-size:.9rem;max-width:76ch}
-footer p+p{margin-top:8px}
 @media (max-width:720px){
   #flow{grid-template-columns:1fr;gap:16px}
   #flow li{border-right:0;border-bottom:1px solid var(--rule);padding:0 0 14px;margin-right:0}
@@ -117,27 +117,22 @@ footer p+p{margin-top:8px}
 
 <section aria-labelledby="h-scenario">
   <h2 id="h-scenario">Tự nhập một tình huống thu chi</h2>
-  <p class="hint">Thử thay số dư, mức chi và các khoản phát sinh trước ngày nhận lương. Trang tính số dư dự kiến từng ngày theo mức chi bạn nhập; đây là phép tính minh họa, không chạy XGBoost và không tạo xác suất thiếu tiền.</p>
-  <div class="scenario-grid">
-    <label>Số dư hiện tại (VND)<input id="scBalance" type="number" min="0" step="1000" value="3500000"></label>
-    <label>Còn bao nhiêu ngày đến kỳ nhận tiền<input id="scDays" type="number" min="3" max="31" step="1" value="12"></label>
-    <label>Chi tiêu mỗi ngày (VND)<input id="scSpend" type="number" min="0" step="1000" value="180000"></label>
-    <label>Tiền nhận vào ngày kỳ sau (VND)<input id="scPayday" type="number" min="0" step="1000" value="5000000"></label>
-    <label>Tiền vào trước kỳ sau (VND)<input id="scIncome" type="number" min="0" step="1000" value="0"></label>
-    <label>Tiền vào sau bao nhiêu ngày<input id="scIncomeDay" type="number" min="1" max="31" step="1" value="5"></label>
-    <label>Khoản chi thêm một lần (VND)<input id="scExtra" type="number" min="0" step="1000" value="0"></label>
-    <label>Chi thêm sau bao nhiêu ngày<input id="scExtraDay" type="number" min="1" max="31" step="1" value="4"></label>
-  </div>
-  <div id="scenarioResult" class="scenario-output" role="status" aria-live="polite"></div>
-  <p class="scenario-note">Quy ước minh họa: θ bằng mức chi mỗi ngày bạn nhập; dưới θ là thiếu tiền. Tiền nhận đúng ngày kỳ sau chỉ được cộng sau khi kết thúc khoảng dự báo, nên không giúp tránh thiếu tiền trong các ngày trước đó. Các số bạn nhập chỉ được xử lý trong trình duyệt, không gửi đi.</p>
+  <p class="hint">Nhập số tiền bằng VND rồi bấm “Xem kết quả”. Đây là phép tính tình huống theo mức chi bạn chọn, không phải xác suất từ XGBoost.</p>
+  <form id="scenarioForm" novalidate>
+    <div class="scenario-grid">
+      <label>Số dư hiện tại (VND)<small>Số tiền đang có trong tài khoản.</small><input id="scBalance" type="number" min="0" step="1000" value="3500000" required></label>
+      <label>Số ngày đến kỳ nhận tiền<small>Số ngày còn phải chi trước khi nhận lương.</small><input id="scDays" type="number" min="3" max="31" step="1" value="12" required></label>
+      <label>Chi tiêu mỗi ngày (VND)<small>Mức chi bình quân; cũng dùng làm ngưỡng an toàn θ.</small><input id="scSpend" type="number" min="0" step="1000" value="180000" required></label>
+      <label>Tiền nhận vào kỳ sau (VND)<small>Chỉ được cộng sau các ngày đang dự báo.</small><input id="scPayday" type="number" min="0" step="1000" value="5000000" required></label>
+      <label>Tiền vào trước kỳ sau (VND)<small>Khoản thu thêm trước ngày lương; nhập 0 nếu không có.</small><input id="scIncome" type="number" min="0" step="1000" value="0" required></label>
+      <label>Tiền vào sau bao nhiêu ngày<small>Tính từ hôm nay; chỉ dùng khi có khoản thu thêm.</small><input id="scIncomeDay" type="number" min="1" max="31" step="1" value="5"></label>
+      <label>Khoản chi thêm một lần (VND)<small>Khoản ngoài mức chi mỗi ngày; nhập 0 nếu không có.</small><input id="scExtra" type="number" min="0" step="1000" value="0" required></label>
+      <label>Chi thêm sau bao nhiêu ngày<small>Tính từ hôm nay; chỉ dùng khi có khoản chi thêm.</small><input id="scExtraDay" type="number" min="1" max="31" step="1" value="4"></label>
+    </div>
+    <button class="scenario-submit" type="submit">Xem kết quả</button>
+  </form>
+  <div id="scenarioResult" class="scenario-output" role="status" aria-live="polite" hidden></div>
 </section>
-
-<footer>
-  <p>Ngưỡng an toàn θ là mức chi tiêu trung bình một ngày của chính người đó. Người dùng bị coi là thiếu tiền nếu số dư cuối chu kỳ thấp hơn θ. Hệ thống cảnh báo khi xác suất vượt ngưỡng τ, được chọn trên một tập dữ liệu riêng.</p>
-  <p>B1 dùng chi tiêu trung bình 14 ngày gần nhất, B2 dùng chi tiêu trung bình cùng thứ trong tuần; cả hai cảnh báo theo một biên được chọn trên cùng tập dữ liệu đó.</p>
-  <p>Ngưỡng τ trên các chu kỳ có sẵn là p* tối đa F1 của seed hiển thị, chọn trên validation. Phép kiểm Q2 dùng thêm đệm Precision +0,03 là một chính sách riêng, không áp dụng trong trang này.</p>
-  <p id="limit"></p>
-</footer>
 </main>
 
 <script>
@@ -290,15 +285,16 @@ function render(){ renderStrip(); renderFlow(); renderChart(); renderTable(); }
 function setDay(t){ const L = cyc().L; S.t = Math.min(Math.max(t,1),L); render(); }
 
 function renderScenario(){
-  const number = id => Number($(id).value);
+  const number = id => $(id).value.trim()==="" ? NaN : Number($(id).value);
   const balance=number("scBalance"), days=number("scDays"), spend=number("scSpend");
   const payday=number("scPayday"), income=number("scIncome"), incomeDay=number("scIncomeDay");
   const extra=number("scExtra"), extraDay=number("scExtraDay");
   const out=$("scenarioResult");
-  if ([balance,days,spend,payday,income,incomeDay,extra,extraDay].some(x=>!Number.isFinite(x) || x<0)
+  out.hidden=false;
+  if ([balance,days,spend,payday,income,extra].some(x=>!Number.isFinite(x) || x<0)
       || !Number.isInteger(days) || days<3 || days>31
-      || !Number.isInteger(incomeDay) || incomeDay<1 || incomeDay>days
-      || !Number.isInteger(extraDay) || extraDay<1 || extraDay>days){
+      || (income>0 && (!Number.isInteger(incomeDay) || incomeDay<1 || incomeDay>days))
+      || (extra>0 && (!Number.isInteger(extraDay) || extraDay<1 || extraDay>days))){
     out.textContent="Hãy nhập số không âm; số ngày đến kỳ nhận từ 3 đến 31, ngày phát sinh từ 1 đến số ngày còn lại.";
     return;
   }
@@ -319,14 +315,13 @@ function renderScenario(){
 
 function init(){
   $("source").textContent = DATA.meta.source;
-  $("limit").textContent = DATA.meta.limit;
   fillUsers(); fillCycles(); S.t = defaultDay(); render();
   $("selUser").addEventListener("change", e=>{ S.u=+e.target.value; S.c=0; fillCycles(); S.t=defaultDay(); render(); });
   $("selCycle").addEventListener("change", e=>{ S.c=+e.target.value; S.t=defaultDay(); render(); });
   $("reveal").addEventListener("change", e=>{ S.reveal=e.target.checked; renderChart(); renderTable(); });
   $("strip").addEventListener("click", e=>{ const b=e.target.closest("button[data-t]"); if(b) setDay(+b.dataset.t); });
-  document.querySelectorAll('.scenario-grid input').forEach(x=>x.addEventListener('input',renderScenario));
-  renderScenario();
+  $("scenarioForm").addEventListener("submit", e=>{ e.preventDefault(); renderScenario(); });
+  document.querySelectorAll('.scenario-grid input').forEach(x=>x.addEventListener('input',()=>{ $("scenarioResult").hidden=true; }));
   document.addEventListener("keydown", e=>{
     if (/^(SELECT|INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) return;
     if (e.key==="ArrowLeft"){ e.preventDefault(); setDay(S.t-1); }
