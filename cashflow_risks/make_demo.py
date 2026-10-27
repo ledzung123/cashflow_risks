@@ -142,7 +142,7 @@ def main():
     dpT = dpT.reset_index(drop=True)
     users = assemble(S, dfT, dpT, meta)
     data = {"meta": {"tau": round(float(S["tau"]), 3), "source": source,
-                     "limit": "Giới hạn: bản minh họa trên dữ liệu mô phỏng, chưa phải lời khuyên tài chính; mô hình chưa được kiểm chứng trên dữ liệu thật."},
+                     "limit": "Giới hạn: đây là bản minh họa, không phải lời khuyên tài chính. Nhánh MoneyData kiểm tra bổ sung trên một tài khoản thật nhưng lớp cảnh báo báo gần như mọi chu kỳ; hiệu quả cảnh báo trên dữ liệu thật chưa được xác nhận."},
             "users": users, "data_quality": imported.attrs["quality"] if imported is not None else None}
     tpl = open(os.path.join(os.path.dirname(__file__), "demo_template.html"), encoding="utf-8").read()
     html = tpl.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))

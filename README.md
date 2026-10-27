@@ -31,6 +31,10 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 - `run_extras.ps1 -SkipSensitivity` chỉ dựng lại demo (khoảng 1 phút).
 - `run_extras.ps1 -BrowserTest` kiểm tra thêm `demo.html` bằng trình duyệt giả lập (cần Node.js và `npm install jsdom` ở thư mục này).
 
+### Demo tự nhập tình huống
+
+`demo.html` có thêm mục tự nhập số dư, số ngày đến kỳ nhận, mức chi mỗi ngày và khoản thu/chi phát sinh. Mục này chỉ tính số dư dự kiến theo các số đã nhập trong trình duyệt, không chạy XGBoost hay tạo xác suất rủi ro cho một người mới. Phần 20 người mô phỏng ở đầu trang vẫn là kết quả XGBoost+risk đã tính trước. Kiểm tra nhanh bằng `node cashflow_risks/test_scenario.js demo.html`.
+
 ## Kết quả
 - Kết quả nằm trong `results\`, bảng và hình cho báo cáo nằm trong `results\final\` (bắt đầu đọc từ `RESULTS.md`).
 - Đánh giá phụ trên người dùng giữ riêng nằm trong `results\user_holdout\USER_HOLDOUT.md`; xem thêm giới hạn trong `DATA_CARD.md`.
